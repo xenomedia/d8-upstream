@@ -1,6 +1,3 @@
-# Ignore binaries.
-/bin
-
 # Ignore non-custom parts of Drupal.
 /modules/contrib
 /profiles/contrib
