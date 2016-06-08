@@ -5,12 +5,21 @@
     "license": "GPL-2.0+",
     "minimum-stability": "dev",
     "prefer-stable": true,
+    "require-dev": {
+        "behat/behat": "^3.1",
+        "drupal/drupal-extension": "^3.1",
+        "behat/mink": "~1.6",
+        "behat/mink-goutte-driver": "~1.2",
+        "jcalderonzumba/gastonjs": "~1.0.2",
+        "jcalderonzumba/mink-phantomjs-driver": "~0.3.1",
+        "mikey179/vfsStream": "~1.2",
+        "phpunit/phpunit": "~4.8"
+    },
     "require": {
         "composer/installers": "^1.0",
         "drupal-composer/drupal-scaffold": "^1.2",
         "cweagans/composer-patches": "dev-master",
-        "xenomedia/zeus": "1.0.0",
-        "phpunit/phpunit": "4.1.*"
+        "xenomedia/zeus": "1.0.0"
     },
     "repositories": [
         {
