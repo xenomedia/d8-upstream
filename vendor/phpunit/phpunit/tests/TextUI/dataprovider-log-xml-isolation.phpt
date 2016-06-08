@@ -13,7 +13,7 @@ require __DIR__ . '/../bootstrap.php';
 PHPUnit_TextUI_Command::main();
 ?>
 --EXPECTF--
-PHPUnit %s by Sebastian Bergmann and contributors.
+PHPUnit %s by Sebastian Bergmann.
 
 ..F.<?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
@@ -34,7 +34,7 @@ Failed asserting that 2 matches expected 3.
 </testsuites>
 
 
-Time: %s, Memory: %s
+Time: %s, Memory: %sMb
 
 There was 1 failure:
 

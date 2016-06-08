@@ -8,9 +8,8 @@ You will need the following installed:
 
 When you have those, run this command:
 ```
-$ composer create-project xenomedia/zeus-project MY_PROJECT --no-interaction --stability dev
+$ composer create-project xenomedia/zeus-project MY_PROJECT --no-interaction --stability rc
 ```
-Composer will create a new directory called MY_PROJECT containing a ```docroot``` directory with a full Lightning code base therein. You can then install it like you would any other Drupal site.
 
 ## Maintenance
 ```drush make```, ```drush pm-download```, ```drush pm-update``` and their ilk are the old-school way of maintaining your code base. Forget them. You're in Composer land now!

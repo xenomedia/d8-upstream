@@ -10,11 +10,11 @@ require __DIR__ . '/../bootstrap.php';
 PHPUnit_TextUI_Command::main();
 ?>
 --EXPECTF--
-PHPUnit %s by Sebastian Bergmann and contributors.
+PHPUnit %s by Sebastian Bergmann.
 
 FFFFFFFFFFFFF
 
-Time: %s, Memory: %s
+Time: %s, Memory: %sMb
 
 There were 13 failures:
 

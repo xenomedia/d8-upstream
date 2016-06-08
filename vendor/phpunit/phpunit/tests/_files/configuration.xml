@@ -4,7 +4,6 @@
          backupStaticAttributes="false"
          bootstrap="/path/to/bootstrap.php"
          cacheTokens="false"
-         columns="80"
          colors="false"
          stderr="false"
          convertErrorsToExceptions="true"
@@ -21,9 +20,7 @@
          beStrictAboutTestsThatDoNotTestAnything="false"
          beStrictAboutOutputDuringTests="false"
          beStrictAboutTestSize="false"
-         beStrictAboutTodoAnnotatedTests="false"
          checkForUnintentionallyCoveredCode="false"
-         beStrictAboutChangesToGlobalState="false"
          verbose="false">
   <testsuites>
     <testsuite name="My Test Suite">
@@ -45,9 +42,6 @@
     <blacklist>
       <directory suffix=".php">/path/to/files</directory>
       <file>/path/to/file</file>
-      <file>
-          /path/to/file
-      </file>
       <exclude>
         <directory suffix=".php">/path/to/files</directory>
         <file>/path/to/file</file>
