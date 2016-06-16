@@ -23,3 +23,15 @@ $local_settings = __DIR__ . "/settings.local.php";
 if (file_exists($local_settings)) {
   include $local_settings;
 }
+$databases['default']['default'] = array (
+  'database' => 'd8_upstream',
+  'username' => 'd8_upstream',
+  'password' => 'd8_upstream',
+  'prefix' => '',
+  'host' => 'localhost',
+  'port' => '3306',
+  'namespace' => 'Drupal\\Core\\Database\\Driver\\mysql',
+  'driver' => 'mysql',
+);
+$settings['hash_salt'] = 'G72D_A8LyaOW97mXXNEfAFXxPMnFjmpXIjaFfE6EcJzRwJTa7g0rrMG4cOAetVbbh1SmhIqtSw';
+$settings['install_profile'] = 'lightning';
