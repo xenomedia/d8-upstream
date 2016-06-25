@@ -15,11 +15,6 @@
         "mikey179/vfsStream": "~1.2",
         "phpunit/phpunit": "~4.8"
     },
-    "require": {
-        "composer/installers": "^1.0",
-        "drupal-composer/drupal-scaffold": "^2.0.0",
-        "xenomedia/zeus": "v1.2.0"
-    },
     "repositories": [
         {
             "type": "composer",

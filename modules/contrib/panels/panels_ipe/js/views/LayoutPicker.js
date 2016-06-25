@@ -22,7 +22,12 @@
     /**
      * @type {function}
      */
-    template_layout: _.template('<li class="ipe-layout" data-layout-id="<%- id %>"><img class="ipe-layout-image" src="<%- icon %>" title="<%- label %>" alt="<%- label %>" /></li>'),
+    template_layout: _.template(
+    '<li class="ipe-layout" data-layout-id="<%- id %>">' +
+    '  <img class="ipe-layout-image" src="<%- icon %>" title="<%- label %>" alt="<%- label %>" />' +
+    '  <span class="ipe-layout-label"><%- label %></span>' +
+    '</li>'
+    ),
 
     /**
      * @type {function}
@@ -101,6 +106,9 @@
 
       // If we're viewing the current layout tab, show a custom item.
       if (this.activeCategory && this.activeCategory == 'Current Layout') {
+        // Hide the search box.
+        this.$('.ipe-category-picker-search').hide();
+
         this.collection.each(function (layout) {
           if (Drupal.panels_ipe.app.get('layout').get('id') == layout.get('id')) {
             this.$('.ipe-category-picker-top').append(this.template_item(layout));

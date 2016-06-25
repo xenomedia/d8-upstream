@@ -12,6 +12,7 @@ use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Panels\PanelsDisplayManager;
 use Drupal\panels\Plugin\DisplayVariant\PanelsDisplayVariant;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -20,6 +21,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Base class for Panelizer entity plugins.
  */
 abstract class PanelizerEntityBase extends PluginBase implements PanelizerEntityInterface, ContainerFactoryPluginInterface {
+  use StringTranslationTrait;
 
   /**
    * @var \Drupal\Panels\PanelsDisplayManager
@@ -71,6 +73,7 @@ abstract class PanelizerEntityBase extends PluginBase implements PanelizerEntity
     $panels_display->setLayout('onecol');
     // @todo: For now we always use the IPE, but we should support not using the ipe.
     $panels_display->setBuilder('ipe');
+    $panels_display->setPattern('panelizer');
 
     // Add all the visible fields to the Panel.
     $entity_type_id = $this->getPluginId();

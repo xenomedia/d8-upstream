@@ -20,6 +20,8 @@ use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\StringTranslation\TranslationInterface;
+use Drupal\ctools\ContextMapperInterface;
+use Drupal\panelizer\Exception\PanelizerException;
 use Drupal\panelizer\Plugin\PanelizerEntityManager;
 use Drupal\panels\PanelsDisplayManagerInterface;
 use Drupal\panels\Plugin\DisplayVariant\PanelsDisplayVariant;
@@ -88,6 +90,13 @@ class Panelizer implements PanelizerInterface {
   protected $panelsManager;
 
   /**
+   * The context mapper.
+   *
+   * @var \Drupal\ctools\ContextMapperInterface
+   */
+  protected $contextMapper;
+
+  /**
    * Constructs a Panelizer.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
@@ -108,8 +117,10 @@ class Panelizer implements PanelizerInterface {
    *   The Panels display manager.
    * @param \Drupal\Core\StringTranslation\TranslationInterface $string_translation
    *   The string translation service.
+   * @param \Drupal\ctools\ContextMapperInterface $context_mapper
+   *   The context mapper service.
    */
-  public function __construct(EntityTypeManagerInterface $entity_type_manager, EntityTypeBundleInfoInterface $entity_type_bundle_info, EntityFieldManagerInterface $entity_field_manager, FieldTypePluginManagerInterface $field_type_manager, ModuleHandlerInterface $module_handler, AccountProxyInterface $current_user, PanelizerEntityManager $panelizer_entity_manager, PanelsDisplayManagerInterface $panels_manager, TranslationInterface $string_translation) {
+  public function __construct(EntityTypeManagerInterface $entity_type_manager, EntityTypeBundleInfoInterface $entity_type_bundle_info, EntityFieldManagerInterface $entity_field_manager, FieldTypePluginManagerInterface $field_type_manager, ModuleHandlerInterface $module_handler, AccountProxyInterface $current_user, PanelizerEntityManager $panelizer_entity_manager, PanelsDisplayManagerInterface $panels_manager, TranslationInterface $string_translation, ContextMapperInterface $context_mapper) {
     $this->entityTypeManager = $entity_type_manager;
     $this->entityTypeBundleInfo = $entity_type_bundle_info;
     $this->entityFieldManager = $entity_field_manager;
@@ -119,6 +130,7 @@ class Panelizer implements PanelizerInterface {
     $this->panelizerEntityManager = $panelizer_entity_manager;
     $this->panelsManager = $panels_manager;
     $this->stringTranslation = $string_translation;
+    $this->contextMapper = $context_mapper;
   }
 
   /**
@@ -146,7 +158,7 @@ class Panelizer implements PanelizerInterface {
    * @return \Drupal\Core\Entity\Display\EntityViewDisplayInterface|NULL
    *   The entity view display if one exists; NULL otherwise.
    */
-  protected function getEntityViewDisplay($entity_type_id, $bundle, $view_mode) {
+  public function getEntityViewDisplay($entity_type_id, $bundle, $view_mode) {
     // Check the existence and status of:
     // - the display for the view mode,
     // - the 'default' display.
@@ -199,7 +211,7 @@ class Panelizer implements PanelizerInterface {
    */
   public function getPanelsDisplay(FieldableEntityInterface $entity, $view_mode, EntityViewDisplayInterface $display = NULL) {
     $settings = $this->getPanelizerSettings($entity->getEntityTypeId(), $entity->bundle(), $view_mode, $display);
-    if ($settings['custom'] && isset($entity->panelizer)) {
+    if (($settings['custom'] || $settings['allow']) && isset($entity->panelizer) && $entity->panelizer->first()) {
       /** @var \Drupal\Core\Field\FieldItemInterface[] $values */
       $values = [];
       foreach ($entity->panelizer as $item) {
@@ -216,7 +228,7 @@ class Panelizer implements PanelizerInterface {
       }
     }
 
-    return $this->getDefaultPanelsDisplay('default', $entity->getEntityTypeId(), $entity->bundle(), $view_mode, $display);
+    return $this->getDefaultPanelsDisplay($settings['default'], $entity->getEntityTypeId(), $entity->bundle(), $view_mode, $display);
   }
 
   /**
@@ -224,7 +236,7 @@ class Panelizer implements PanelizerInterface {
    */
   public function setPanelsDisplay(FieldableEntityInterface $entity, $view_mode, $default, PanelsDisplayVariant $panels_display = NULL) {
     $settings = $this->getPanelizerSettings($entity->getEntityTypeId(), $entity->bundle(), $view_mode);
-    if ($settings['custom'] && isset($entity->panelizer)) {
+    if (($settings['custom'] || $settings['allow']) && isset($entity->panelizer)) {
       $panelizer_item = NULL;
       /** @var \Drupal\Core\Field\FieldItemInterface $item */
       foreach ($entity->panelizer as $item) {
@@ -256,6 +268,9 @@ class Panelizer implements PanelizerInterface {
 
       $entity->save();
     }
+    else {
+      throw new PanelizerException("Custom overrides not enabled on this entity, bundle and view mode");
+    }
   }
 
   /**
@@ -276,7 +291,9 @@ class Panelizer implements PanelizerInterface {
     // Get each one individually.
     $panels_displays = [];
     foreach ($display_names as $name) {
-      $panels_displays[$name] = $this->getDefaultPanelsDisplay($name, $entity_type_id, $bundle, $view_mode, $display);
+      if ($panels_display = $this->getDefaultPanelsDisplay($name, $entity_type_id, $bundle, $view_mode, $display)) {
+        $panels_displays[$name] = $panels_display;
+      }
     }
 
     return $panels_displays;
@@ -288,16 +305,22 @@ class Panelizer implements PanelizerInterface {
   public function getDefaultPanelsDisplay($name, $entity_type_id, $bundle, $view_mode, EntityViewDisplayInterface $display = NULL) {
     if (!$display) {
       $display = $this->getEntityViewDisplay($entity_type_id, $bundle, $view_mode);
+      // If we still don't find a display, then we won't find a Panelizer
+      // default for sure.
+      if (!$display) {
+        return NULL;
+      }
     }
 
     $config = $display->getThirdPartySetting('panelizer', 'displays', []);
     if (!empty($config[$name])) {
+      // Set a default just in case.
+      $config[$name]['builder'] = empty($config[$name]['builder']) ? 'standard' : $config[$name]['builder'];
       // @todo: validate schema after https://www.drupal.org/node/2392057 is fixed.
       $panels_display = $this->panelsManager->importDisplay($config[$name], FALSE);
     }
     else {
-      $panels_display = $this->getEntityPlugin($entity_type_id)->getDefaultDisplay($display, $bundle, $view_mode);
-      // @todo: This is actually an appropriate place to set the storage info.
+      return NULL;
     }
 
     // @todo: Should be set when written, not here!
@@ -317,10 +340,50 @@ class Panelizer implements PanelizerInterface {
    */
   public function setDefaultPanelsDisplay($name, $entity_type_id, $bundle, $view_mode, PanelsDisplayVariant $panels_display) {
     $display = $this->getEntityViewDisplay($entity_type_id, $bundle, $view_mode);
+    if (!$display) {
+      throw new PanelizerException("Unable to find display for given entity type, bundle and view mode");
+    }
 
     // Set this individual Panels display.
     $panels_displays = $display->getThirdPartySetting('panelizer', 'displays', []);
     $panels_displays[$name] = $this->panelsManager->exportDisplay($panels_display);
+    $display->setThirdPartySetting('panelizer', 'displays', $panels_displays);
+
+    $display->save();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getDisplayStaticContexts($name, $entity_type_id, $bundle, $view_mode, EntityViewDisplayInterface $display = NULL) {
+    if (!$display) {
+      $display = $this->getEntityViewDisplay($entity_type_id, $bundle, $view_mode);
+      // If we still don't find a display, then we won't find a Panelizer
+      // default for sure.
+      if (!$display) {
+        return NULL;
+      }
+    }
+
+    $config = $display->getThirdPartySetting('panelizer', 'displays', []);
+    if (!empty($config[$name]) && !empty($config[$name]['static_context'])) {
+      return $this->contextMapper->getContextValues($config[$name]['static_context']);
+    }
+    return [];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setDisplayStaticContexts($name, $entity_type_id, $bundle, $view_mode, $contexts) {
+    $display = $this->getEntityViewDisplay($entity_type_id, $bundle, $view_mode);
+    if (!$display) {
+      throw new PanelizerException("Unable to find display for given entity type, bundle and view mode");
+    }
+
+    // Set this Panels display's static contexts.
+    $panels_displays = $display->getThirdPartySetting('panelizer', 'displays', []);
+    $panels_displays[$name]['static_context'] = $contexts;
     $display->setThirdPartySetting('panelizer', 'displays', $panels_displays);
 
     $display->save();
@@ -352,6 +415,8 @@ class Panelizer implements PanelizerInterface {
     $settings = [
       'enable' => $this->isPanelized($entity_type_id, $bundle, $view_mode, $display),
       'custom' => $display->getThirdPartySetting('panelizer', 'custom', FALSE),
+      'allow' => $display->getThirdPartySetting('panelizer', 'allow', FALSE),
+      'default' => $display->getThirdPartySetting('panelizer', 'default', 'default'),
     ];
 
     // Make sure that the Panelizer field actually exists.
@@ -373,6 +438,8 @@ class Panelizer implements PanelizerInterface {
 
     $display->setThirdPartySetting('panelizer', 'enable', !empty($settings['enable']));
     $display->setThirdPartySetting('panelizer', 'custom', !empty($settings['enable']) && !empty($settings['custom']));
+    $display->setThirdPartySetting('panelizer', 'allow', !empty($settings['enable']) && !empty($settings['allow']));
+    $display->setThirdPartySetting('panelizer', 'default', $settings['default']);
 
     if (!empty($settings['enable'])) {
       // Set the default display.
@@ -381,11 +448,12 @@ class Panelizer implements PanelizerInterface {
         /** @var \Drupal\panelizer\Plugin\PanelizerEntityInterface $panelizer_entity_plugin */
         $panelizer_entity_plugin = $this->panelizerEntityManager->createInstance($display->getTargetEntityTypeId(), []);
         $displays['default'] = $this->panelsManager->exportDisplay($panelizer_entity_plugin->getDefaultDisplay($display, $display->getTargetBundle(), $display->getMode()));
+        $settings['default'] = "{$display->getTargetEntityTypeId()}__{$display->getTargetBundle()}__{$view_mode}__default";
         $display->setThirdPartySetting('panelizer', 'displays', $displays);
       }
 
       // Make sure the field exists.
-      if (!empty($settings['custom'])) {
+      if (($settings['custom'] || $settings['allow'])) {
         $field_storage = $this->entityTypeManager->getStorage('field_storage_config')->load($entity_type_id . '.panelizer');
         if (!$field_storage) {
           $field_storage = $this->entityTypeManager->getStorage('field_storage_config')->create([
