@@ -20,6 +20,9 @@ require_once __DIR__.'/Fixtures/ClassesWithParents/A.php';
 
 class ClassCollectionLoaderTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @requires PHP 5.4
+     */
     public function testTraitDependencies()
     {
         require_once __DIR__.'/Fixtures/deps/traits.php';
@@ -91,6 +94,7 @@ class ClassCollectionLoaderTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider getDifferentOrdersForTraits
+     * @requires PHP 5.4
      */
     public function testClassWithTraitsReordering(array $classes)
     {
@@ -134,6 +138,9 @@ class ClassCollectionLoaderTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @requires PHP 5.4
+     */
     public function testFixClassWithTraitsOrdering()
     {
         require_once __DIR__.'/Fixtures/ClassesWithParents/CTrait.php';

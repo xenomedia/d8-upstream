@@ -42,7 +42,7 @@ class ProgressBar
     private $stepWidth;
     private $percent = 0.0;
     private $formatLineCount;
-    private $messages = array();
+    private $messages;
     private $overwrite = true;
 
     private static $formatters;
@@ -82,7 +82,7 @@ class ProgressBar
      * @param string   $name     The placeholder name (including the delimiter char like %)
      * @param callable $callable A PHP callable
      */
-    public static function setPlaceholderFormatterDefinition($name, callable $callable)
+    public static function setPlaceholderFormatterDefinition($name, $callable)
     {
         if (!self::$formatters) {
             self::$formatters = self::initPlaceholderFormatters();
@@ -140,16 +140,6 @@ class ProgressBar
         return isset(self::$formats[$name]) ? self::$formats[$name] : null;
     }
 
-    /**
-     * Associates a text with a named placeholder.
-     *
-     * The text is displayed when the progress bar is rendered but only
-     * when the corresponding placeholder is part of the custom format line
-     * (by wrapping the name with %).
-     *
-     * @param string $message The text to associate with the placeholder
-     * @param string $name    The name of the placeholder
-     */
     public function setMessage($message, $name = 'message')
     {
         $this->messages[$name] = $message;
@@ -181,6 +171,20 @@ class ProgressBar
     }
 
     /**
+     * Gets the progress bar step.
+     *
+     * @deprecated since version 2.6, to be removed in 3.0. Use {@link getProgress()} instead.
+     *
+     * @return int The progress bar step
+     */
+    public function getStep()
+    {
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 2.6 and will be removed in 3.0. Use the getProgress() method instead.', E_USER_DEPRECATED);
+
+        return $this->getProgress();
+    }
+
+    /**
      * Gets the current step position.
      *
      * @return int The progress bar step
@@ -193,9 +197,11 @@ class ProgressBar
     /**
      * Gets the progress bar step width.
      *
+     * @internal This method is public for PHP 5.3 compatibility, it should not be used.
+     *
      * @return int The progress bar step width
      */
-    private function getStepWidth()
+    public function getStepWidth()
     {
         return $this->stepWidth;
     }
@@ -346,6 +352,22 @@ class ProgressBar
     }
 
     /**
+     * Sets the current progress.
+     *
+     * @deprecated since version 2.6, to be removed in 3.0. Use {@link setProgress()} instead.
+     *
+     * @param int $step The current progress
+     *
+     * @throws LogicException
+     */
+    public function setCurrent($step)
+    {
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 2.6 and will be removed in 3.0. Use the setProgress() method instead.', E_USER_DEPRECATED);
+
+        $this->setProgress($step);
+    }
+
+    /**
      * Sets whether to overwrite the progressbar, false for new line.
      *
      * @param bool $overwrite
@@ -412,11 +434,15 @@ class ProgressBar
             $this->setRealFormat($this->internalFormat ?: $this->determineBestFormat());
         }
 
-        $this->overwrite(preg_replace_callback("{%([a-z\-_]+)(?:\:([^%]+))?%}i", function ($matches) {
-            if ($formatter = $this::getPlaceholderFormatterDefinition($matches[1])) {
-                $text = call_user_func($formatter, $this, $this->output);
-            } elseif (isset($this->messages[$matches[1]])) {
-                $text = $this->messages[$matches[1]];
+        // these 3 variables can be removed in favor of using $this in the closure when support for PHP 5.3 will be dropped.
+        $self = $this;
+        $output = $this->output;
+        $messages = $this->messages;
+        $this->overwrite(preg_replace_callback("{%([a-z\-_]+)(?:\:([^%]+))?%}i", function ($matches) use ($self, $output, $messages) {
+            if ($formatter = $self::getPlaceholderFormatterDefinition($matches[1])) {
+                $text = call_user_func($formatter, $self, $output);
+            } elseif (isset($messages[$matches[1]])) {
+                $text = $messages[$matches[1]];
             } else {
                 return $matches[0];
             }
