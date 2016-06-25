@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\Driver\DrushDriver.
- */
-
 namespace Drupal\Driver;
 
 use Drupal\Component\Utility\Random;
@@ -186,6 +181,81 @@ class DrushDriver extends BaseDriver {
   }
 
   /**
+   * {@inheritdoc}
+   */
+  public function clearStaticCaches() {
+    // The drush driver does each operation as a separate request;
+    // therefore, 'clearStaticCaches' can be a no-op.
+  }
+
+  /**
+   * Decodes JSON object returned by Drush.
+   *
+   * It will clean up any junk that may have appeared before or after the
+   * JSON object. This can happen with remote Drush aliases.
+   *
+   * @param string $output
+   *   The output from Drush.
+   * @return object
+   *   The decoded JSON object.
+   */
+  protected function decodeJsonObject($output) {
+    // Remove anything before the first '{'.
+    $output = preg_replace('/^[^\{]*/', '', $output);
+    // Remove anything after the last '}'.
+    $output = preg_replace('/[^\}]*$/s', '', $output);
+    return json_decode($output);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function createNode($node) {
+    $result = $this->drush('behat', array('create-node', escapeshellarg(json_encode($node))), array());
+    return $this->decodeJsonObject($result);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function nodeDelete($node) {
+    $this->drush('behat', array('delete-node', escapeshellarg(json_encode($node))), array());
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function createTerm(\stdClass $term) {
+    $result = $this->drush('behat', array('create-term', escapeshellarg(json_encode($term))), array());
+    return $this->decodeJsonObject($result);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function termDelete(\stdClass $term) {
+    $this->drush('behat', array('delete-term', escapeshellarg(json_encode($term))), array());
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function isField($entity_type, $field_name) {
+    // If the Behat Drush Endpoint is not installed on the site-under-test,
+    // then the drush() method will throw an exception. In this instance, we
+    // want to treat all potential fields as non-fields.  This allows the
+    // Drush Driver to work with certain built-in Drush capabilities (e.g.
+    // creating users) even if the Behat Drush Endpoint is not available.
+    try {
+      $result = $this->drush('behat', array('is-field', escapeshellarg(json_encode(array($entity_type, $field_name)))), array());
+      return strpos($result, "true\n") !== FALSE;
+    }
+    catch (\Exception $e) {
+      return FALSE;
+    }
+  }
+
+  /**
    * Sets common drush arguments or options.
    *
    * @param string $arguments
@@ -257,13 +327,6 @@ class DrushDriver extends BaseDriver {
       return $process->getOutput();
     }
 
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function clearStaticCaches() {
-    // Be very very quiet.
   }
 
   /**
