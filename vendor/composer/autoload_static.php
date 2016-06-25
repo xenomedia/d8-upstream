@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitae2a8010d7b55a0f592507eb2bf0839b
+class ComposerStaticInita3114192796685d1cc25ad7324ef03df
 {
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
@@ -12,8 +12,8 @@ class ComposerStaticInitae2a8010d7b55a0f592507eb2bf0839b
         'edc6464955a37aa4d5fbf39d40fb6ee7' => __DIR__ . '/..' . '/symfony/polyfill-php55/bootstrap.php',
         '3e2471375464aac821502deb0ac64275' => __DIR__ . '/..' . '/symfony/polyfill-php54/bootstrap.php',
         '32dcc8afd4335739640db7d200c1971d' => __DIR__ . '/..' . '/symfony/polyfill-apcu/bootstrap.php',
-        'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
         'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
+        'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         'def43f6c87e4f8dfd0c9e1b1bab14fe8' => __DIR__ . '/..' . '/symfony/polyfill-iconv/bootstrap.php',
         '5255c38a0faeba867671b61dfda6d864' => __DIR__ . '/..' . '/paragonie/random_compat/lib/random.php',
@@ -299,8 +299,8 @@ class ComposerStaticInitae2a8010d7b55a0f592507eb2bf0839b
         'Behat\\Mink\\Driver\\' => 
         array (
             0 => __DIR__ . '/..' . '/behat/mink-browserkit-driver/src',
-            1 => __DIR__ . '/..' . '/behat/mink-goutte-driver/src',
-            2 => __DIR__ . '/..' . '/behat/mink-selenium2-driver/src',
+            1 => __DIR__ . '/..' . '/behat/mink-selenium2-driver/src',
+            2 => __DIR__ . '/..' . '/behat/mink-goutte-driver/src',
         ),
         'Behat\\Mink\\' => 
         array (
@@ -890,10 +890,10 @@ class ComposerStaticInitae2a8010d7b55a0f592507eb2bf0839b
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitae2a8010d7b55a0f592507eb2bf0839b::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitae2a8010d7b55a0f592507eb2bf0839b::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInitae2a8010d7b55a0f592507eb2bf0839b::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInitae2a8010d7b55a0f592507eb2bf0839b::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInita3114192796685d1cc25ad7324ef03df::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInita3114192796685d1cc25ad7324ef03df::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInita3114192796685d1cc25ad7324ef03df::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInita3114192796685d1cc25ad7324ef03df::$classMap;
 
         }, null, ClassLoader::class);
     }
