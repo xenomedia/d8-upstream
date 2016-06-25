@@ -1,8 +1,3 @@
-# Ignore non-custom parts of Drupal.
-/modules/contrib
-/profiles/contrib
-/themes/contrib
-
 # Ignore paths that contain user-generated content.
 sites/*/files
 sites/*/private
