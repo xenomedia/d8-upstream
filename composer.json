@@ -23,8 +23,8 @@
     ],
     "require": {
         "composer/installers": "1.*",
-        "drupal-composer/drupal-scaffold": "^2.0.0",
-        "xenomedia/zeus": "v1.2.0"
+        "drupal-composer/drupal-scaffold": "^1.2",
+        "xenomedia/zeus": "v1.1.0"
     },
     "scripts": {
       "post-install-cmd": [

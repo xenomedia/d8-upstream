@@ -3,8 +3,8 @@ name: Lightning
 type: module
 description: Core functionality for the Lightning distribution.
 
-# Information added by Drupal.org packaging script on 2016-06-18
-version: '8.x-1.00'
+# Information added by Drupal.org packaging script on 2016-06-05
+version: '8.x-1.00-rc6'
 core: '8.x'
 project: 'lightning'
-datestamp: 1466285092
+datestamp: 1465153841

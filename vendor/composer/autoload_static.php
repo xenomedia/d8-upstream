@@ -56,6 +56,7 @@ class ComposerStaticInit6bbd48d367b534fd923d0581f307f2da
             'Symfony\\Component\\Process\\' => 26,
             'Symfony\\Component\\HttpKernel\\' => 29,
             'Symfony\\Component\\HttpFoundation\\' => 33,
+            'Symfony\\Component\\Finder\\' => 25,
             'Symfony\\Component\\Filesystem\\' => 29,
             'Symfony\\Component\\EventDispatcher\\' => 34,
             'Symfony\\Component\\DomCrawler\\' => 29,
@@ -68,6 +69,10 @@ class ComposerStaticInit6bbd48d367b534fd923d0581f307f2da
             'Symfony\\Component\\BrowserKit\\' => 29,
             'Symfony\\Cmf\\Component\\Routing\\' => 30,
             'Symfony\\Bridge\\PsrHttpMessage\\' => 30,
+        ),
+        'R' => 
+        array (
+            'Robo\\' => 5,
         ),
         'P' => 
         array (
@@ -192,6 +197,10 @@ class ComposerStaticInit6bbd48d367b534fd923d0581f307f2da
         array (
             0 => __DIR__ . '/..' . '/symfony/http-foundation',
         ),
+        'Symfony\\Component\\Finder\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/finder',
+        ),
         'Symfony\\Component\\Filesystem\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/filesystem',
@@ -239,6 +248,10 @@ class ComposerStaticInit6bbd48d367b534fd923d0581f307f2da
         'Symfony\\Bridge\\PsrHttpMessage\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/psr-http-message-bridge',
+        ),
+        'Robo\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/codegyre/robo/src',
         ),
         'Psr\\Http\\Message\\' => 
         array (
@@ -347,6 +360,17 @@ class ComposerStaticInit6bbd48d367b534fd923d0581f307f2da
             array (
                 0 => __DIR__ . '/..' . '/phpspec/prophecy/src',
             ),
+            'PEAR' => 
+            array (
+                0 => __DIR__ . '/..' . '/pear/pear_exception',
+            ),
+        ),
+        'L' => 
+        array (
+            'Lurker' => 
+            array (
+                0 => __DIR__ . '/..' . '/henrikbjorn/lurker/src',
+            ),
         ),
         'I' => 
         array (
@@ -413,6 +437,13 @@ class ComposerStaticInit6bbd48d367b534fd923d0581f307f2da
                 0 => __DIR__ . '/..' . '/doctrine/common/lib',
             ),
         ),
+        'C' => 
+        array (
+            'Console' => 
+            array (
+                0 => __DIR__ . '/..' . '/pear/console_getopt',
+            ),
+        ),
         'B' => 
         array (
             'Behat\\Transliterator' => 
@@ -436,6 +467,17 @@ class ComposerStaticInit6bbd48d367b534fd923d0581f307f2da
                 0 => __DIR__ . '/..' . '/behat/behat/src',
             ),
         ),
+        'A' => 
+        array (
+            'Archive_Tar' => 
+            array (
+                0 => __DIR__ . '/..' . '/pear/archive_tar',
+            ),
+        ),
+    );
+
+    public static $fallbackDirsPsr0 = array (
+        0 => __DIR__ . '/..' . '/pear/pear-core-minimal/src',
     );
 
     public static $classMap = array (
@@ -893,6 +935,7 @@ class ComposerStaticInit6bbd48d367b534fd923d0581f307f2da
             $loader->prefixLengthsPsr4 = ComposerStaticInit6bbd48d367b534fd923d0581f307f2da::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInit6bbd48d367b534fd923d0581f307f2da::$prefixDirsPsr4;
             $loader->prefixesPsr0 = ComposerStaticInit6bbd48d367b534fd923d0581f307f2da::$prefixesPsr0;
+            $loader->fallbackDirsPsr0 = ComposerStaticInit6bbd48d367b534fd923d0581f307f2da::$fallbackDirsPsr0;
             $loader->classMap = ComposerStaticInit6bbd48d367b534fd923d0581f307f2da::$classMap;
 
         }, null, ClassLoader::class);

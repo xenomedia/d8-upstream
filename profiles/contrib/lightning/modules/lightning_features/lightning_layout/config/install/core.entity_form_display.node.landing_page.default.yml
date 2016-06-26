@@ -25,11 +25,6 @@ content:
     settings: {  }
     third_party_settings: {  }
     type: metatag_firehose
-  panelizer:
-    type: panelizer
-    weight: 5
-    settings: {  }
-    third_party_settings: {  }
   path:
     type: path
     weight: 3
@@ -51,5 +46,6 @@ content:
       placeholder: ''
     third_party_settings: {  }
 hidden:
+  panelizer: true
   promote: true
   sticky: true
