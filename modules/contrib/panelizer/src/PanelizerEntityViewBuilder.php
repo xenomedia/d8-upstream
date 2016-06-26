@@ -352,8 +352,6 @@ class PanelizerEntityViewBuilder implements EntityViewBuilderInterface, EntityHa
 
     foreach ($entities as $id => $entity) {
       $panels_display = $this->panelizer->getPanelsDisplay($entity, $view_mode, $displays[$entity->bundle()]);
-      $settings = $this->panelizer->getPanelizerSettings($entity->getEntityTypeId(), $entity->bundle(), $view_mode, $displays[$entity->bundle()]);
-      $panels_display->setContexts($this->panelizer->getDisplayStaticContexts($settings['default'], $entity->getEntityTypeId(), $entity->bundle(), $view_mode, $displays[$entity->bundle()]));
       $build[$id] = $this->buildPanelized($entity, $panels_display, $view_mode, $langcode);
     }
 

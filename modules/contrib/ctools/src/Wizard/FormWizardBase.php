@@ -176,7 +176,7 @@ abstract class FormWizardBase extends FormBase implements FormWizardInterface {
    *
    * @return string
    */
-  public function getNextOp() {
+  protected function getNextOp() {
     return $this->t('Next');
   }
 

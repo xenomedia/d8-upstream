@@ -23,7 +23,7 @@
         }
     ],
     "require": {
-        "drupal/lightning": "8.1.0",
+        "drupal/lightning": "8.1.00-rc6",
         "drupal/google_analytics": "8.2.*",
         "composer/installers": "^1.0",
         "drupal/metatag": "8.1.0-beta9"

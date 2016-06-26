@@ -358,12 +358,4 @@ class EntityField extends BlockBase implements ContextAwarePluginInterface, Cont
     ]);
   }
 
-  public function __wakeup() {
-    parent::__wakeup();
-    // @todo figure out why this happens.
-    // prevent $fieldStorageDefinition being erroneously set to $this.
-    $this->fieldStorageDefinition = NULL;
-  }
-
-
 }

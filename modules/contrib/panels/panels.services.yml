@@ -2,9 +2,6 @@ services:
   plugin.manager.panels.display_builder:
     class: Drupal\panels\Plugin\DisplayBuilder\DisplayBuilderManager
     arguments: ['@container.namespaces', '@cache.discovery', '@module_handler']
-  plugin.manager.panels.pattern:
-    class: Drupal\panels\PanelsPatternManager
-    parent: default_plugin_manager
   panels.display_manager:
     class: Drupal\panels\PanelsDisplayManager
     arguments: ['@plugin.manager.display_variant', '@config.typed']

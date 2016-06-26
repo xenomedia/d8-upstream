@@ -112,8 +112,9 @@ class PanelsDisplayVariantTest extends UnitTestCase {
     $form_state = (new FormState())->setValues($values);
     $this->variant->submitConfigurationForm($form, $form_state);
 
-    $configuration = $this->variant->getConfiguration();
-    $this->assertSame($values['page_title'], $configuration['page_title']);
+    $property = new \ReflectionProperty($this->variant, 'configuration');
+    $property->setAccessible(TRUE);
+    $this->assertSame($values['page_title'], $property->getValue($this->variant)['page_title']);
   }
 
   /**

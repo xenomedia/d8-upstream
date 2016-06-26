@@ -43,7 +43,7 @@ class PanelizerFieldType extends FieldItemBase {
       ->setRequired(FALSE);
     $properties['panels_display'] = MapDataDefinition::create('map')
       ->setLabel(new TranslatableMarkup('Panels display'))
-      ->setRequired(FALSE);
+      ->setRequired(TRUE);
 
     return $properties;
   }
@@ -86,8 +86,6 @@ class PanelizerFieldType extends FieldItemBase {
   }
 
   /**
-   * Returns the Panels display plugin manager.
-   *
    * @return \Drupal\panels\PanelsDisplayManagerInterface
    */
   protected static function getPanelsDisplayManager() {
@@ -122,12 +120,9 @@ class PanelizerFieldType extends FieldItemBase {
   public function postSave($update) {
     $panels_manager = $this->getPanelsDisplayManager();
     $panels_display_config = $this->get('panels_display')->getValue();
-
-    // If our field has custom panelizer display config data.
-    if (!empty($panels_display_config) && is_array($panels_display_config)) {
+    if (!empty($panels_display_config)) {
       $panels_display = $panels_manager->importDisplay($panels_display_config, FALSE);
-    }
-    if (!empty($panels_display)) {
+
       // Set the storage id to include the current revision id.
       $entity = $this->getEntity();
       $storage_id_parts = [

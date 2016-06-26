@@ -8,14 +8,12 @@
 namespace Drupal\panelizer\Plugin\PanelsStorage;
 
 use Drupal\Core\Access\AccessResult;
-use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Plugin\Context\Context;
 use Drupal\Core\Plugin\Context\ContextDefinition;
 use Drupal\Core\Session\AccountInterface;
-use Drupal\panelizer\Exception\PanelizerException;
 use Drupal\panelizer\PanelizerInterface;
 use Drupal\panels\Plugin\DisplayVariant\PanelsDisplayVariant;
 use Drupal\panels\Storage\PanelsStorageBase;
@@ -80,7 +78,7 @@ class PanelizerFieldPanelsStorage extends PanelsStorageBase implements Container
    * @return \Drupal\Core\Entity\EntityInterface|NULL
    */
   protected function loadEntity($id) {
-    list ($entity_type, $id, , $revision_id) = array_pad(explode(':', $id), 4, NULL);
+    list ($entity_type, $id, , $revision_id) = explode(':', $id);
 
     $storage = $this->entityTypeManager->getStorage($entity_type);
     if ($revision_id) {
@@ -94,36 +92,18 @@ class PanelizerFieldPanelsStorage extends PanelsStorageBase implements Container
   }
 
   /**
-   * Returns the entity context.
-   *
-   * Wraps creating new Context objects to avoid typed data in tests.
-   *
-   * @param string $entity_type_id
-   *   The entity type id.
-   * @param \Drupal\Core\Entity\EntityInterface $entity
-   *   The entity.
-   *
-   * @return \Drupal\Core\Plugin\Context\Context
-   *   The context.
-   */
-  protected function getEntityContext($entity_type_id, EntityInterface $entity) {
-    return new Context(new ContextDefinition('entity:' . $entity_type_id, NULL, TRUE), $entity);
-  }
-
-  /**
    * {@inheritdoc}
    */
   public function load($id) {
     if ($entity = $this->loadEntity($id)) {
       list ($entity_type_id, , $view_mode) = explode(':', $id);
-      if ($panels_display = $this->panelizer->getPanelsDisplay($entity, $view_mode)) {
-        // Set the entity as a context on the Panels display.
-        $contexts = [
-          '@panelizer.entity_context:entity' => $this->getEntityContext($entity_type_id, $entity),
-        ];
-        $panels_display->setContexts($contexts);
-        return $panels_display;
-      }
+      $panels_display = $this->panelizer->getPanelsDisplay($entity, $view_mode);
+      // Set the entity as a context on the Panels display.
+      $contexts = [
+        '@panelizer.entity_context:entity' => new Context(new ContextDefinition('entity:' . $entity_type_id, NULL, TRUE), $entity),
+      ];
+      $panels_display->setContexts($contexts);
+      return $panels_display;
     }
   }
 
@@ -135,13 +115,7 @@ class PanelizerFieldPanelsStorage extends PanelsStorageBase implements Container
     if ($entity = $this->loadEntity($id)) {
       list (,, $view_mode) = explode(':', $id);
       if ($entity instanceof FieldableEntityInterface) {
-        try {
-          $this->panelizer->setPanelsDisplay($entity, $view_mode, NULL, $panels_display);
-        }
-        catch (PanelizerException $e) {
-          // Translate to expected exception type.
-          throw new \Exception($e->getMessage());
-        }
+        $this->panelizer->setPanelsDisplay($entity, $view_mode, NULL, $panels_display);
       }
     }
     else {

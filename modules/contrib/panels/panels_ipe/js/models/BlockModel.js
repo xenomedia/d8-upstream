@@ -51,8 +51,6 @@
 
       /**
        * The ID of the plugin for this block.
-       *
-       * @type {string}
        */
       plugin_id: null,
 
@@ -64,14 +62,7 @@
        *
        * @type {string}
        */
-      html: null,
-
-      /**
-       * Whether or not this block is currently in a syncing state.
-       *
-       * @type {bool}
-       */
-      syncing: false
+      html: null
 
     },
 
