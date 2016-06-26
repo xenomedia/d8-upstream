@@ -6232,19 +6232,68 @@
         ]
     },
     {
+        "name": "drupal-composer/drupal-scaffold",
+        "version": "2.0.0",
+        "version_normalized": "2.0.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/drupal-composer/drupal-scaffold.git",
+            "reference": "ad5fb543c5ebb5a266493248d5f6d03ea91bddb5"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/drupal-composer/drupal-scaffold/zipball/ad5fb543c5ebb5a266493248d5f6d03ea91bddb5",
+            "reference": "ad5fb543c5ebb5a266493248d5f6d03ea91bddb5",
+            "shasum": ""
+        },
+        "require": {
+            "composer-plugin-api": "^1.0.0",
+            "php": ">=5.4.5"
+        },
+        "require-dev": {
+            "composer/composer": "dev-master",
+            "phpunit/phpunit": "^4.4.0"
+        },
+        "time": "2016-05-25 17:52:16",
+        "type": "composer-plugin",
+        "extra": {
+            "class": "DrupalComposer\\DrupalScaffold\\Plugin",
+            "branch-alias": {
+                "dev-master": "2.0.x-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "DrupalComposer\\DrupalScaffold\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "GPL-2.0+"
+        ],
+        "description": "Composer Plugin for updating the Drupal scaffold files when using drupal/core"
+    },
+    {
         "name": "drupal/media_entity_document",
-        "version": "dev-8.x-1.x",
-        "version_normalized": "dev-8.x-1.x",
+        "version": "8.1.0",
+        "version_normalized": "8.1.0.0",
         "source": {
             "type": "git",
             "url": "https://git.drupal.org/project/media_entity_document.git",
-            "reference": "f6910cee295516225b6cd9509ec2a9337ba461a0"
+            "reference": "9421623c56bebcaf5810a04d7f6a7dd72d9e462d"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://ftp.drupal.org/files/projects/media_entity_document-8.x-1.0.zip",
+            "reference": null,
+            "shasum": null
         },
         "require": {
             "drupal/core": "8.*",
             "drupal/media_entity": "8.*"
         },
-        "time": "2016-06-18 16:37:17",
+        "time": "2016-06-02 15:35:57",
         "type": "drupal-module",
         "extra": {
             "branch-alias": {
@@ -6261,12 +6310,18 @@
     },
     {
         "name": "drupal/entity_browser",
-        "version": "dev-8.x-1.x",
-        "version_normalized": "dev-8.x-1.x",
+        "version": "8.1.0-alpha3",
+        "version_normalized": "8.1.0.0-alpha3",
         "source": {
             "type": "git",
             "url": "https://git.drupal.org/project/entity_browser.git",
-            "reference": "77e18608cff42cfc4384bbcdd730a1ffdc37779b"
+            "reference": "3d86431a6c70289b7b357875e8bf167a05e7dcc9"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://ftp.drupal.org/files/projects/entity_browser-8.x-1.0-alpha3.zip",
+            "reference": null,
+            "shasum": null
         },
         "require": {
             "drupal/core": "8.*"
@@ -6283,15 +6338,15 @@
             "drupal/node": "Required by drupal/entity_browser_example",
             "drupal/views": "Required by drupal/entity_browser_example"
         },
-        "time": "2016-06-23 14:05:47",
+        "time": "2016-05-31 16:42:48",
         "type": "drupal-module",
         "extra": {
             "branch-alias": {
                 "dev-8.x-1.x": "8.1.x-dev"
             },
             "patches_applied": {
-                "The view widget should support radio buttons": "https://www.drupal.org/files/issues/2738843-2.patch",
-                "The iframe display plugin should not put dashes in the iframe name": "https://www.drupal.org/files/issues/2741237-3.patch"
+                "2738843 - The view widget should support radio buttons": "https://www.drupal.org/files/issues/2738843-2.patch",
+                "2741237 - The iframe display plugin should not put dashes in the iframe name": "https://www.drupal.org/files/issues/2741237-3.patch"
             }
         },
         "installation-source": "source",
@@ -6320,461 +6375,24 @@
         "homepage": "http://drupal.org/project/entity_browser"
     },
     {
-        "name": "pear/pear_exception",
-        "version": "v1.0.0",
-        "version_normalized": "1.0.0.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/pear/PEAR_Exception.git",
-            "reference": "8c18719fdae000b690e3912be401c76e406dd13b"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/pear/PEAR_Exception/zipball/8c18719fdae000b690e3912be401c76e406dd13b",
-            "reference": "8c18719fdae000b690e3912be401c76e406dd13b",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=4.4.0"
-        },
-        "require-dev": {
-            "phpunit/phpunit": "*"
-        },
-        "time": "2015-02-10 20:07:52",
-        "type": "class",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "1.0.x-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-0": {
-                "PEAR": ""
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "include-path": [
-            "."
-        ],
-        "license": [
-            "BSD-2-Clause"
-        ],
-        "authors": [
-            {
-                "name": "Helgi Thormar",
-                "email": "dufuz@php.net"
-            },
-            {
-                "name": "Greg Beaver",
-                "email": "cellog@php.net"
-            }
-        ],
-        "description": "The PEAR Exception base class.",
-        "homepage": "https://github.com/pear/PEAR_Exception",
-        "keywords": [
-            "exception"
-        ]
-    },
-    {
-        "name": "pear/console_getopt",
-        "version": "v1.4.1",
-        "version_normalized": "1.4.1.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/pear/Console_Getopt.git",
-            "reference": "82f05cd1aa3edf34e19aa7c8ca312ce13a6a577f"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/pear/Console_Getopt/zipball/82f05cd1aa3edf34e19aa7c8ca312ce13a6a577f",
-            "reference": "82f05cd1aa3edf34e19aa7c8ca312ce13a6a577f",
-            "shasum": ""
-        },
-        "time": "2015-07-20 20:28:12",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "psr-0": {
-                "Console": "./"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "include-path": [
-            "./"
-        ],
-        "license": [
-            "BSD-2-Clause"
-        ],
-        "authors": [
-            {
-                "name": "Greg Beaver",
-                "email": "cellog@php.net",
-                "role": "Helper"
-            },
-            {
-                "name": "Andrei Zmievski",
-                "email": "andrei@php.net",
-                "role": "Lead"
-            },
-            {
-                "name": "Stig Bakken",
-                "email": "stig@php.net",
-                "role": "Developer"
-            }
-        ],
-        "description": "More info available on: http://pear.php.net/package/Console_Getopt"
-    },
-    {
-        "name": "pear/pear-core-minimal",
-        "version": "v1.10.1",
-        "version_normalized": "1.10.1.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/pear/pear-core-minimal.git",
-            "reference": "cae0f1ce0cb5bddb611b0a652d322905a65a5896"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/pear/pear-core-minimal/zipball/cae0f1ce0cb5bddb611b0a652d322905a65a5896",
-            "reference": "cae0f1ce0cb5bddb611b0a652d322905a65a5896",
-            "shasum": ""
-        },
-        "require": {
-            "pear/console_getopt": "~1.3",
-            "pear/pear_exception": "~1.0"
-        },
-        "replace": {
-            "rsky/pear-core-min": "self.version"
-        },
-        "time": "2015-10-17 11:41:19",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "psr-0": {
-                "": "src/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "include-path": [
-            "src/"
-        ],
-        "license": [
-            "BSD-3-Clause"
-        ],
-        "authors": [
-            {
-                "name": "Christian Weiske",
-                "email": "cweiske@php.net",
-                "role": "Lead"
-            }
-        ],
-        "description": "Minimal set of PEAR core files to be used as composer dependency"
-    },
-    {
-        "name": "pear/archive_tar",
-        "version": "1.4.2",
-        "version_normalized": "1.4.2.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/pear/Archive_Tar.git",
-            "reference": "bdd47347df76dbaa89227c5e1afd6f6809985b4c"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/pear/Archive_Tar/zipball/bdd47347df76dbaa89227c5e1afd6f6809985b4c",
-            "reference": "bdd47347df76dbaa89227c5e1afd6f6809985b4c",
-            "shasum": ""
-        },
-        "require": {
-            "pear/pear-core-minimal": "^1.10.0alpha2",
-            "php": ">=5.2.0"
-        },
-        "require-dev": {
-            "phpunit/phpunit": "*"
-        },
-        "suggest": {
-            "ext-bz2": "bz2 compression support.",
-            "ext-xz": "lzma2 compression support.",
-            "ext-zlib": "Gzip compression support."
-        },
-        "time": "2016-02-25 10:30:39",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "1.4.x-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-0": {
-                "Archive_Tar": ""
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "include-path": [
-            "./"
-        ],
-        "license": [
-            "BSD-3-Clause"
-        ],
-        "authors": [
-            {
-                "name": "Vincent Blavet",
-                "email": "vincent@phpconcept.net"
-            },
-            {
-                "name": "Greg Beaver",
-                "email": "greg@chiaraquartet.net"
-            },
-            {
-                "name": "Michiel Rook",
-                "email": "mrook@php.net"
-            }
-        ],
-        "description": "Tar file management class",
-        "homepage": "https://github.com/pear/Archive_Tar",
-        "keywords": [
-            "archive",
-            "tar"
-        ]
-    },
-    {
-        "name": "henrikbjorn/lurker",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/flint/Lurker.git",
-            "reference": "712d3ef19bef161daa2ba0e0237c6b875587a089"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/flint/Lurker/zipball/712d3ef19bef161daa2ba0e0237c6b875587a089",
-            "reference": "712d3ef19bef161daa2ba0e0237c6b875587a089",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.3.3",
-            "symfony/config": "^2.2|^3.0",
-            "symfony/event-dispatcher": "^2.2|^3.0"
-        },
-        "suggest": {
-            "ext-inotify": ">=0.1.6"
-        },
-        "time": "2016-03-16 15:22:20",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "1.0.x-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-0": {
-                "Lurker": "src"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Yaroslav Kiliba",
-                "email": "om.dattaya@gmail.com"
-            },
-            {
-                "name": "Konstantin Kudryashov",
-                "email": "ever.zet@gmail.com"
-            },
-            {
-                "name": "Henrik Bjrnskov",
-                "email": "henrik@bjrnskov.dk"
-            }
-        ],
-        "description": "Resource Watcher.",
-        "keywords": [
-            "filesystem",
-            "resource",
-            "watching"
-        ]
-    },
-    {
-        "name": "symfony/finder",
-        "version": "v3.1.1",
-        "version_normalized": "3.1.1.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/symfony/finder.git",
-            "reference": "40d17ed287bf51a2f884c4619ce8ff2a1c5cd219"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/symfony/finder/zipball/40d17ed287bf51a2f884c4619ce8ff2a1c5cd219",
-            "reference": "40d17ed287bf51a2f884c4619ce8ff2a1c5cd219",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.5.9"
-        },
-        "time": "2016-05-13 18:06:41",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "3.1-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Symfony\\Component\\Finder\\": ""
-            },
-            "exclude-from-classmap": [
-                "/Tests/"
-            ]
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Fabien Potencier",
-                "email": "fabien@symfony.com"
-            },
-            {
-                "name": "Symfony Community",
-                "homepage": "https://symfony.com/contributors"
-            }
-        ],
-        "description": "Symfony Finder Component",
-        "homepage": "https://symfony.com"
-    },
-    {
-        "name": "codegyre/robo",
-        "version": "0.7.2",
-        "version_normalized": "0.7.2.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/consolidation-org/Robo.git",
-            "reference": "9982edecb19f59420031dd9855b0d31e861b8b68"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/consolidation-org/Robo/zipball/9982edecb19f59420031dd9855b0d31e861b8b68",
-            "reference": "9982edecb19f59420031dd9855b0d31e861b8b68",
-            "shasum": ""
-        },
-        "require": {
-            "henrikbjorn/lurker": "~1.0",
-            "php": ">=5.4.0",
-            "symfony/console": "~2.5|~3.0",
-            "symfony/filesystem": "~2.5|~3.0",
-            "symfony/finder": "~2.5|~3.0",
-            "symfony/process": "~2.5|~3.0"
-        },
-        "require-dev": {
-            "codeception/aspect-mock": "0.5.4",
-            "codeception/base": "~2.1.5",
-            "codeception/verify": "0.2.*",
-            "natxet/cssmin": "~3.0",
-            "patchwork/jsqueeze": "~1.0",
-            "pear/archive_tar": "~1.0"
-        },
-        "suggest": {
-            "pear/archive_tar": "Allows tar archives to be created and extracted in taskPack and taskExtract, respectively."
-        },
-        "time": "2016-04-13 20:14:17",
-        "bin": [
-            "robo"
-        ],
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Robo\\": "src"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Davert",
-                "email": "davert.php@resend.cc"
-            }
-        ],
-        "description": "Modern task runner"
-    },
-    {
-        "name": "drupal-composer/drupal-scaffold",
-        "version": "1.3.2",
-        "version_normalized": "1.3.2.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/drupal-composer/drupal-scaffold.git",
-            "reference": "594e0cba2ad3c494da39a8cca0408ac9e3300f52"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/drupal-composer/drupal-scaffold/zipball/594e0cba2ad3c494da39a8cca0408ac9e3300f52",
-            "reference": "594e0cba2ad3c494da39a8cca0408ac9e3300f52",
-            "shasum": ""
-        },
-        "require": {
-            "codegyre/robo": "^0.7.1",
-            "composer-plugin-api": "^1.0.0",
-            "ext-curl": "*",
-            "ext-zlib": "*",
-            "guzzlehttp/guzzle": "~6.1",
-            "pear/archive_tar": "~1.0",
-            "php": ">=5.4.5"
-        },
-        "require-dev": {
-            "composer/composer": "dev-master",
-            "phpunit/phpunit": "^4.4.0"
-        },
-        "time": "2016-04-13 15:46:44",
-        "type": "composer-plugin",
-        "extra": {
-            "class": "DrupalComposer\\DrupalScaffold\\Plugin",
-            "branch-alias": {
-                "dev-master": "1.0.x-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "DrupalComposer\\DrupalScaffold\\": "src/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "GPL-2.0+"
-        ],
-        "description": "Composer Plugin for updating the Drupal scaffold files when using drupal/core"
-    },
-    {
         "name": "drupal/lightning",
-        "version": "8.1.00-rc6",
-        "version_normalized": "8.1.00.0-RC6",
+        "version": "8.1.00",
+        "version_normalized": "8.1.00.0",
         "source": {
             "type": "git",
             "url": "https://git.drupal.org/project/lightning.git",
-            "reference": "f32bd790226dde25cf698432b5fee21bc1acd973"
+            "reference": "4bfd6e2d046646a45785bc75ba725cdf10e006e7"
         },
         "dist": {
             "type": "zip",
-            "url": "https://ftp.drupal.org/files/projects/lightning-8.x-1.00-rc6.zip",
+            "url": "https://ftp.drupal.org/files/projects/lightning-8.x-1.00.zip",
             "reference": null,
             "shasum": null
         },
         "require": {
             "composer/installers": "^1.0",
-            "cweagans/composer-patches": "~1.5.0",
-            "drupal-composer/drupal-scaffold": "^1.2",
+            "cweagans/composer-patches": "^1.5.0",
+            "drupal-composer/drupal-scaffold": "^2.0.0",
             "drupal/acquia_connector": "^8.1.1",
             "drupal/block_content": "8.*",
             "drupal/breakpoint": "8.*",
@@ -6788,9 +6406,9 @@
             "drupal/datetime": "8.*",
             "drupal/dblog": "8.*",
             "drupal/editor": "8.*",
-            "drupal/embed": "8.1.0-rc2",
+            "drupal/embed": "^8.1.0",
             "drupal/entity": "8.1.0-alpha3",
-            "drupal/entity_browser": "dev-8.x-1.x",
+            "drupal/entity_browser": "8.1.0-alpha3",
             "drupal/entity_embed": "8.1.0-alpha1",
             "drupal/entity_reference": "8.*",
             "drupal/features": "^8.3.0",
@@ -6799,13 +6417,13 @@
             "drupal/help": "8.*",
             "drupal/history": "8.*",
             "drupal/image": "8.*",
-            "drupal/inline_entity_form": "8.1.0-alpha6",
+            "drupal/inline_entity_form": "^8.1.0",
             "drupal/layout_plugin": "8.1.0-alpha22",
-            "drupal/media_entity": "~8.1.1",
-            "drupal/media_entity_document": "dev-8.x-1.x",
-            "drupal/media_entity_image": "~8.1.1",
-            "drupal/media_entity_instagram": "~8.1.0",
-            "drupal/media_entity_twitter": "~8.1.0",
+            "drupal/media_entity": "^8.1.0",
+            "drupal/media_entity_document": "^8.1.0",
+            "drupal/media_entity_image": "^8.1.0",
+            "drupal/media_entity_instagram": "^8.1.0",
+            "drupal/media_entity_twitter": "^8.1.0",
             "drupal/menu_link_content": "8.*",
             "drupal/menu_ui": "8.*",
             "drupal/metatag": "^8.1.0",
@@ -6825,9 +6443,9 @@
             "drupal/text": "8.*",
             "drupal/token": "^8.1.0",
             "drupal/toolbar": "8.*",
-            "drupal/video_embed_field": "~8.1.0",
+            "drupal/video_embed_field": "^8.1.0",
             "drupal/views": "8.*",
-            "drupal/views_infinite_scroll": "^8.1",
+            "drupal/views_infinite_scroll": "~8.1.0",
             "drupal/views_ui": "8.*",
             "drupal/workbench_moderation": "~8.1.0"
         },
@@ -6844,11 +6462,19 @@
         },
         "require-dev": {
             "behat/behat": "^3.0",
+            "behat/mink": "~1.7",
+            "behat/mink-goutte-driver": "~1.2",
             "drupal/coder": "8.*",
-            "drupal/drupal-extension": "^3.1",
+            "drupal/devel": "^8.0.0",
+            "drupal/drupal-extension": "3.1.5",
             "drush/drush": "^9.0",
             "jakoch/phantomjs-installer": "1.9.8",
-            "phing/phing": "^2.14"
+            "jcalderonzumba/gastonjs": "~1.0.2",
+            "jcalderonzumba/mink-phantomjs-driver": "~0.3.1",
+            "mikey179/vfsstream": "~1.2",
+            "phing/phing": "^2.14",
+            "phpunit/phpunit": "~4.8",
+            "symfony/css-selector": "~2.8"
         },
         "suggest": {
             "drupal/core": "Required by drupal/lightning_core, drupal/lightning_layout, drupal/lightning_media, drupal/lightning_media_document, drupal/lightning_media_image, drupal/lightning_media_instagram, drupal/lightning_media_twitter, drupal/lightning_media_video, drupal/lightning_workflow",
@@ -6872,7 +6498,7 @@
             "drupal/views_infinite_scroll": "Required by drupal/lightning_media",
             "drupal/workbench_moderation": "Required by drupal/lightning_workflow"
         },
-        "time": "2016-06-05 19:02:38",
+        "time": "2016-06-18 21:16:29",
         "type": "drupal-profile",
         "extra": {
             "installer-paths": {
@@ -6884,30 +6510,39 @@
                 ]
             },
             "patches": {
+                "drupal/core": {
+                    "Plugin Lazy loading can cause usort warning": "https://www.drupal.org/files/issues/Iterating-through-array--2699157.patch"
+                },
+                "drupal/ctools": {
+                    "2747739 - Mega patch": "https://www.drupal.org/files/issues/ctools--8.x-3.0-alpha26--1fe3649.patch"
+                },
                 "drupal/entity_browser": {
-                    "The view widget should support radio buttons": "https://www.drupal.org/files/issues/2738843-2.patch",
-                    "The iframe display plugin should not put dashes in the iframe name": "https://www.drupal.org/files/issues/2741237-3.patch"
+                    "2738843 - The view widget should support radio buttons": "https://www.drupal.org/files/issues/2738843-2.patch",
+                    "2741237 - The iframe display plugin should not put dashes in the iframe name": "https://www.drupal.org/files/issues/2741237-3.patch"
                 },
                 "drupal/entity_embed": {
-                    "Hide Next button during Selection if Entity Browser is enabled": "https://www.drupal.org/files/issues/2656062-8.patch"
+                    "2656062 - Hide Next button during Selection if Entity Browser is enabled": "https://www.drupal.org/files/issues/2656062-8.patch"
                 },
-                "drupal/field_group": {
-                    "Field Group not working on node edit inside inline entity form": "https://www.drupal.org/files/issues/field-group-2645570-8.x-1.0-rc4.patch"
+                "drupal/page_manager": {
+                    "2747739 - Mega Patch": "https://www.drupal.org/files/issues/page_manager--alpha23-09e79ff--2747739-3.patch"
                 },
                 "drupal/panelizer": {
-                    "Generate new UUIDs for displays when switching from default to field storage": "https://www.drupal.org/files/issues/2701349-2.patch",
-                    "Explicitly set the Panels IPE URL root when saving in Panelizer": "https://www.drupal.org/files/issues/panelizer-ipe-url-root-handling.patch"
+                    "2747739 - Mega Patch": "https://www.drupal.org/files/issues/panelizer--alpha2-1ddfa61--2747739-5.patch",
+                    "2701349 - Generate new UUIDs for displays when switching from default to field storage": "https://www.drupal.org/files/issues/2701349-2.patch",
+                    "2700597 - Explicitly set the Panels IPE URL root when saving in Panelizer": "https://www.drupal.org/files/issues/panelizer-ipe-url-root-handling.patch",
+                    "2664682 - Implement admin UI for editing Panelizer defaults": "https://www.drupal.org/files/issues/2664682-45.patch"
                 },
                 "drupal/panels": {
-                    "beta4 to 8eba1a0 - quickedit blocks": "https://www.drupal.org/files/issues/panels--beta4-to-8eba1a0.patch",
+                    "2747739 - Mega Patch": "https://www.drupal.org/files/issues/panels--beta4-4c4a3a7--2747739-2.patch",
                     "2667754 - Allow other modules to disable the IPE based on custom logic": "https://www.drupal.org/files/issues/2667754-3.patch",
-                    "Bandaid tempstore patch": "https://www.drupal.org/files/issues/bandaid.patch"
+                    "Bandaid tempstore patch": "https://www.drupal.org/files/issues/bandaid.patch",
+                    "2697587 - Wizard API integration": "https://www.drupal.org/files/issues/2697587-42.patch"
                 },
                 "drupal/scheduled_updates": {
                     "2674874 - Issue saving Schedule Update Type form": "https://www.drupal.org/files/issues/schedule_updates-save_type-2674874-2.patch"
                 },
                 "drupal/views_infinite_scroll": {
-                    "View \"No results\" area doesn't appear even view has no results": "https://www.drupal.org/files/issues/no-wrapper-empty-rows-2701881-2.patch"
+                    "2701881 - View \"No results\" area doesn't appear even view has no results": "https://www.drupal.org/files/issues/no-wrapper-empty-rows-2701881-2.patch"
                 },
                 "drupal/workbench_moderation": {
                     "2668006 - Provide logical access control for when IPE should be applied to moderated nodes": "https://www.drupal.org/files/issues/2668006-2.patch"
@@ -6930,23 +6565,23 @@
     },
     {
         "name": "xenomedia/zeus",
-        "version": "v1.1.0",
-        "version_normalized": "1.1.0.0",
+        "version": "v1.2.0",
+        "version_normalized": "1.2.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/xenomedia/zeus.git",
-            "reference": "28a19afcde3d51cee6f5911b98d82df1b706d4b8"
+            "reference": "6732b6e52bfe2c9bea8eb5f8b9b06544c783f2cb"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/xenomedia/zeus/zipball/28a19afcde3d51cee6f5911b98d82df1b706d4b8",
-            "reference": "28a19afcde3d51cee6f5911b98d82df1b706d4b8",
+            "url": "https://api.github.com/repos/xenomedia/zeus/zipball/6732b6e52bfe2c9bea8eb5f8b9b06544c783f2cb",
+            "reference": "6732b6e52bfe2c9bea8eb5f8b9b06544c783f2cb",
             "shasum": ""
         },
         "require": {
             "composer/installers": "^1.0",
             "drupal/google_analytics": "8.2.*",
-            "drupal/lightning": "8.1.00-rc6",
+            "drupal/lightning": "8.1.0",
             "drupal/metatag": "8.1.0-beta9"
         },
         "require-dev": {
@@ -6957,7 +6592,7 @@
             "jakoch/phantomjs-installer": "1.9.8",
             "phing/phing": "^2.14"
         },
-        "time": "2016-06-17 21:33:09",
+        "time": "2016-06-25 01:44:28",
         "type": "drupal-profile",
         "extra": {
             "installer-paths": {

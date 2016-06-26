@@ -1,8 +1,11 @@
 <?php
 
+/**
+ * Contains \Drupal\entity_browser\DisplayBase.
+ */
+
 namespace Drupal\entity_browser;
 
-use Drupal\Component\Uuid\UuidInterface;
 use Drupal\Core\Plugin\PluginBase;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -27,7 +30,7 @@ abstract class DisplayBase extends PluginBase implements DisplayInterface, Conta
    *
    * @var \Drupal\Core\Entity\EntityInterface[]
    */
-  protected $entities = [];
+  protected $entities = array();
 
   /**
    * Event dispatcher service.
@@ -35,20 +38,6 @@ abstract class DisplayBase extends PluginBase implements DisplayInterface, Conta
    * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
    */
   protected $eventDispatcher;
-
-  /**
-   * UUID generator interface.
-   *
-   * @var \Drupal\Component\Uuid\UuidInterface
-   */
-  protected $uuidGenerator;
-
-  /**
-   * Instance UUID string.
-   *
-   * @var string
-   */
-  protected $uuid = NULL;
 
   /**
    * Constructs display plugin.
@@ -61,14 +50,11 @@ abstract class DisplayBase extends PluginBase implements DisplayInterface, Conta
    *   The plugin implementation definition.
    * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $event_dispatcher
    *   Event dispatcher service.
-   * @param \Drupal\Component\Uuid\UuidInterface
-   *   UUID generator interface.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, EventDispatcherInterface $event_dispatcher, UuidInterface $uuid_generator) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, EventDispatcherInterface $event_dispatcher) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->configuration += $this->defaultConfiguration();
     $this->eventDispatcher = $event_dispatcher;
-    $this->uuidGenerator = $uuid_generator;
   }
 
   /**
@@ -79,8 +65,7 @@ abstract class DisplayBase extends PluginBase implements DisplayInterface, Conta
       $configuration,
       $plugin_id,
       $plugin_definition,
-      $container->get('event_dispatcher'),
-      $container->get('uuid')
+      $container->get('event_dispatcher')
     );
   }
 
@@ -88,7 +73,7 @@ abstract class DisplayBase extends PluginBase implements DisplayInterface, Conta
    * {@inheritdoc}
    */
   public function defaultConfiguration() {
-    return [];
+    return array();
   }
 
   /**
@@ -112,7 +97,7 @@ abstract class DisplayBase extends PluginBase implements DisplayInterface, Conta
    * {@inheritdoc}
    */
   public function calculateDependencies() {
-    return [];
+    return array();
   }
 
   /**
@@ -120,23 +105,6 @@ abstract class DisplayBase extends PluginBase implements DisplayInterface, Conta
    */
   public function label() {
     return $this->label;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getUuid() {
-    if (empty($this->uuid)) {
-      $this->uuid = $this->uuidGenerator->generate();
-    }
-    return $this->uuid;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function setUuid($uuid) {
-    $this->uuid = $uuid;
   }
 
 }

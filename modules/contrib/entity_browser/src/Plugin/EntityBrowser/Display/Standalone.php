@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Contains \Drupal\entity_browser\Plugin\EntityBrowser\Display\Standalone.
+ */
+
 namespace Drupal\entity_browser\Plugin\EntityBrowser\Display;
 
 use Drupal\entity_browser\DisplayBase;
@@ -61,6 +65,20 @@ class Standalone extends DisplayBase implements DisplayRouterInterface {
    */
   public function path() {
     return $this->configuration['path'];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getUuid() {
+    return '';
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setUuid($uuid) {
+    // @TODO Implement it.
   }
 
 }

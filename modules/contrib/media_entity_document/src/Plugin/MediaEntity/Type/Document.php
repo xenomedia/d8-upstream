@@ -1,5 +1,4 @@
 <?php
-
 namespace Drupal\media_entity_document\Plugin\MediaEntity\Type;
 
 use Drupal\media_entity\MediaInterface;
@@ -83,22 +82,16 @@ class Document extends MediaTypeBase {
     $source_field = $this->configuration['source_field'];
     /** @var \Drupal\file\FileInterface $file */
     $file = $this->entityTypeManager->getStorage('file')->load($media->{$source_field}->target_id);
+    $mimetype = $file->getMimeType();
+    $mimetype = explode('/', $mimetype);
+    $thumbnail = $this->config->get('icon_base') . "/{$mimetype[0]}-{$mimetype[1]}.png";
 
-    if ($file) {
-      $mimetype = $file->getMimeType();
-      $mimetype = explode('/', $mimetype);
-      $thumbnail = $this->config->get('icon_base') . "/{$mimetype[0]}-{$mimetype[1]}.png";
+    if (!is_file($thumbnail)) {
+      $thumbnail = $this->config->get('icon_base') . "/{$mimetype[1]}.png";
 
       if (!is_file($thumbnail)) {
-        $thumbnail = $this->config->get('icon_base') . "/{$mimetype[1]}.png";
-
-        if (!is_file($thumbnail)) {
-          $thumbnail = $this->config->get('icon_base') . '/document.png';
-        }
+        $thumbnail = $this->config->get('icon_base') . '/document.png';
       }
-    }
-    else {
-      $thumbnail = $this->config->get('icon_base') . '/document.png';
     }
 
     return $thumbnail;
