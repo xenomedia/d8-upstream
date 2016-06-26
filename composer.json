@@ -24,7 +24,8 @@
     "require": {
         "composer/installers": "^1.0",
         "drupal-composer/drupal-scaffold": "^2.0.0",
-        "xenomedia/zeus": "v1.2.0"
+        "xenomedia/zeus": "v1.2.0",
+        "drupal/field_widget": "8.*"
     },
     "scripts": {
       "post-install-cmd": [
