@@ -26,7 +26,8 @@
         "drupal/lightning": "8.1.0",
         "drupal/google_analytics": "8.2.*",
         "composer/installers": "^1.0",
-        "drupal/metatag": "8.1.0-beta9"
+        "drupal/metatag": "8.1.0-beta9",
+        "drupal/stage_file_proxy": "8.*"
     },
     "extra": {
         "installer-paths": {

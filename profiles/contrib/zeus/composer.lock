@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "b6400a7ffd2a272c569cb22c4618be11",
-    "content-hash": "06be637052ace95efe6461617f07b9f4",
+    "hash": "c9da1886a6ef8b1668c22625ef5988e0",
+    "content-hash": "836680f32ff6bfdab202d22d68ab4f23",
     "packages": [
         {
             "name": "composer/installers",
@@ -1889,6 +1889,37 @@
                 "Drupal"
             ],
             "time": "2016-01-24 17:16:43"
+        },
+        {
+            "name": "drupal/stage_file_proxy",
+            "version": "8.1.0-alpha1",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupal.org/project/stage_file_proxy",
+                "reference": "500578d301d65ccba4ad01ed7c8b5cdd4b299e88"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/stage_file_proxy-8.x-1.0-alpha1.zip",
+                "reference": null,
+                "shasum": null
+            },
+            "require": {
+                "drupal/core": "8.*"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "branch-alias": {
+                    "dev-8.x-1.x": "8.1.x-dev"
+                }
+            },
+            "notification-url": "https://packagist.drupal-composer.org/downloads/",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "description": "Proxies files from production server so you do not have to transfer them manually",
+            "homepage": "https://www.drupal.org/project/stage_file_proxy",
+            "time": "2016-05-06 15:17:12"
         },
         {
             "name": "drupal/token",
