@@ -5,7 +5,3 @@ Plugin Lazy loading can cause usort warning
 Source: https://www.drupal.org/files/issues/Iterating-through-array--2699157.patch
 
 
-Fixes Uncaught PHP Exception when selecting too many tests to be tested from UI
-Source: https://www.drupal.org/files/issues/2575725-16.patch
-
-

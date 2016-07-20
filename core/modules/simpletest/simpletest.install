@@ -94,8 +94,10 @@ function simpletest_schema() {
         'description' => 'Test ID, messages belonging to the same ID are reported together',
       ),
       'test_class' => array(
-        'type' => 'text',
+        'type' => 'varchar_ascii',
+        'length' => 255,
         'not null' => TRUE,
+        'default' => '',
         'description' => 'The name of the class that created this message.',
       ),
       'status' => array(
@@ -118,8 +120,10 @@ function simpletest_schema() {
         'description' => 'The message group this message belongs to. For example: warning, browser, user.',
       ),
       'function' => array(
-        'type' => 'text',
+        'type' => 'varchar_ascii',
+        'length' => 255,
         'not null' => TRUE,
+        'default' => '',
         'description' => 'Name of the assertion function or method that created this message.',
       ),
       'line' => array(
@@ -138,7 +142,7 @@ function simpletest_schema() {
     ),
     'primary key' => array('message_id'),
     'indexes' => array(
-      'reporter' => array(array('test_class', 255), 'message_id'),
+      'reporter' => array('test_class', 'message_id'),
     ),
   );
   $schema['simpletest_test_id'] = array(

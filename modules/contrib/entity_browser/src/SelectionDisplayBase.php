@@ -1,13 +1,9 @@
 <?php
 
-/**
- * Contains \Drupal\entity_browser\SelectionDisplayBase.
- */
-
 namespace Drupal\entity_browser;
 
 use Drupal\Core\Plugin\PluginBase;
-use Drupal\Core\Entity\EntityManagerInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\entity_browser\Events\Events;
@@ -39,9 +35,9 @@ abstract class SelectionDisplayBase extends PluginBase implements SelectionDispl
   /**
    * Entity manager service.
    *
-   * @var \Drupal\Core\Entity\EntityManagerInterface
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
-  protected $entityManager;
+  protected $entityTypeManager;
 
   /**
    * Constructs widget plugin.
@@ -54,13 +50,13 @@ abstract class SelectionDisplayBase extends PluginBase implements SelectionDispl
    *   The plugin implementation definition.
    * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $event_dispatcher
    *   Event dispatcher service.
-   * @param \Drupal\Core\Entity\EntityManagerInterface
-   *   Entity manager service.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   *   The entity manager type service.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, EventDispatcherInterface $event_dispatcher, EntityManagerInterface $entity_manager) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, EventDispatcherInterface $event_dispatcher, EntityTypeManagerInterface $entity_type_manager) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->eventDispatcher = $event_dispatcher;
-    $this->entityManager = $entity_manager;
+    $this->entityTypeManager = $entity_type_manager;
     $this->setConfiguration($configuration);
   }
 
@@ -73,7 +69,7 @@ abstract class SelectionDisplayBase extends PluginBase implements SelectionDispl
       $plugin_id,
       $plugin_definition,
       $container->get('event_dispatcher'),
-      $container->get('entity.manager')
+      $container->get('entity_type.manager')
     );
   }
 

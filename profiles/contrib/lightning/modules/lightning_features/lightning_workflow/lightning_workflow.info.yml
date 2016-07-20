@@ -10,8 +10,8 @@ dependencies:
   - workbench_moderation
 
 
-# Information added by Drupal.org packaging script on 2016-06-18
-version: '8.x-1.00'
+# Information added by Drupal.org packaging script on 2016-07-18
+version: '8.x-1.02'
 core: '8.x'
 project: 'lightning'
-datestamp: 1466285092
+datestamp: 1468864294

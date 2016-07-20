@@ -19,6 +19,7 @@ use Drupal\user\Entity\Role;
 use Drupal\Core\Site\Settings;
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Url;
+use Drupal\Core\Session\AccountInterface;
 
 /**
  * Class SpiController.
@@ -172,6 +173,9 @@ class SpiController extends ControllerBase {
     // Based on code from system.install.
     $additional_data['pending_updates'] = FALSE;
     foreach (\Drupal::moduleHandler()->getModuleList() as $module => $filename) {
+      drupal_static_reset('drupal_get_schema_versions');
+      module_load_install($module);
+
       $updates = drupal_get_schema_versions($module);
       if ($updates !== FALSE) {
         $default = drupal_get_installed_schema_version($module);
@@ -636,9 +640,9 @@ class SpiController extends ControllerBase {
   private function getAdminCount() {
     $roles_name = array();
     $get_roles = Role::loadMultiple();
-    unset($get_roles[DRUPAL_ANONYMOUS_RID]);
+    unset($get_roles[AccountInterface::ANONYMOUS_ROLE]);
     $permission = array('administer permissions', 'administer users');
-    foreach ($permission as $key => $value) {
+    foreach ($permission as $value) {
       $filtered_roles = array_filter($get_roles, function ($role) use ($value) {
         return $role->hasPermission($value);
       });
@@ -1090,7 +1094,7 @@ class SpiController extends ControllerBase {
 
     $result = array();
     $keys_to_send = array('name', 'version', 'package', 'core', 'project');
-    foreach ($modules as $module_key => $module) {
+    foreach ($modules as $module) {
       $info = array();
       $info['status'] = $module->status;
       foreach ($keys_to_send as $key) {
@@ -1276,7 +1280,7 @@ class SpiController extends ControllerBase {
 
     if ($request->get('destination')) {
       $this->spiProcessMessages($response);
-      $route_match = $route = RouteMatch::createFromRequest($request);
+      $route_match = RouteMatch::createFromRequest($request);
       return $this->redirect($route_match->getRouteName(), $route_match->getRawParameters()->all());
     }
 

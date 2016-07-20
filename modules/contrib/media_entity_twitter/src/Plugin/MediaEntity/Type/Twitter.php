@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\media_entity_twitter\Plugin\MediaEntity\Type\Twitter.
- */
-
 namespace Drupal\media_entity_twitter\Plugin\MediaEntity\Type;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
@@ -16,7 +11,6 @@ use Drupal\media_entity\MediaTypeBase;
 use Drupal\media_entity\MediaTypeException;
 use Drupal\Component\Serialization\Json;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-
 
 /**
  * Provides media type plugin for Twitter.
@@ -78,6 +72,15 @@ class Twitter extends MediaTypeBase {
   public function __construct(array $configuration, $plugin_id, $plugin_definition, EntityTypeManagerInterface $entity_type_manager, EntityFieldManagerInterface $entity_field_manager, ConfigFactoryInterface $config_factory) {
     parent::__construct($configuration, $plugin_id, $plugin_definition, $entity_type_manager, $entity_field_manager, $config_factory->get('media_entity.settings'));
     $this->configFactory = $config_factory;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function defaultConfiguration() {
+    return [
+      'use_twitter_api' => FALSE,
+    ];
   }
 
   /**

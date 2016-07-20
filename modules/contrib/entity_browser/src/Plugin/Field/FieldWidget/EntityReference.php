@@ -1,16 +1,12 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\entity_browser\Plugin\Field\FieldWidget\EntityReference.
- */
-
 namespace Drupal\entity_browser\Plugin\Field\FieldWidget;
 
+use Symfony\Component\Validator\ConstraintViolationInterface;
 use Drupal\Component\Utility\Html;
 use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Entity\ContentEntityInterface;
-use Drupal\Core\Entity\EntityManagerInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
@@ -19,8 +15,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Url;
 use Drupal\Core\Validation\Plugin\Validation\Constraint\NotNullConstraint;
-use Drupal\entity_browser\Events\Events;
-use Drupal\entity_browser\Events\RegisterJSCallbacks;
+use Drupal\entity_browser\EntityCollection;
 use Drupal\entity_browser\FieldWidgetDisplayManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -29,8 +24,7 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 /**
  * Plugin implementation of the 'entity_reference' widget for entity browser.
-
- * @FieldWidget(
+ *  * @FieldWidget(
  *   id = "entity_browser_entity_reference",
  *   label = @Translation("Entity browser"),
  *   description = @Translation("Uses entity browser to select entities."),
@@ -43,11 +37,11 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
 class EntityReference extends WidgetBase implements ContainerFactoryPluginInterface {
 
   /**
-   * Entity manager service
+   * Entity type manager service.
    *
-   * @var \Drupal\Core\Entity\EntityManagerInterface
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
-  protected $entityManager;
+  protected $entityTypeManager;
 
   /**
    * Field widget display plugin manager.
@@ -59,7 +53,7 @@ class EntityReference extends WidgetBase implements ContainerFactoryPluginInterf
   /**
    * The depth of the delete button.
    *
-   * This property exists so it can be changed if subclasses
+   * This property exists so it can be changed if subclasses.
    *
    * @var int
    */
@@ -78,16 +72,16 @@ class EntityReference extends WidgetBase implements ContainerFactoryPluginInterf
    *   The widget settings.
    * @param array $third_party_settings
    *   Any third party settings.
-   * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
-   *   Entity manager service.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   *   Entity type manager service.
    * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $event_dispatcher
    *   Event dispatcher.
    * @param \Drupal\entity_browser\FieldWidgetDisplayManager $field_display_manager
    *   Field widget display plugin manager.
    */
-  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, array $third_party_settings, EntityManagerInterface $entity_manager, EventDispatcherInterface $event_dispatcher, FieldWidgetDisplayManager $field_display_manager) {
+  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, array $third_party_settings, EntityTypeManagerInterface $entity_type_manager, EventDispatcherInterface $event_dispatcher, FieldWidgetDisplayManager $field_display_manager) {
     parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $third_party_settings);
-    $this->entityManager = $entity_manager;
+    $this->entityTypeManager = $entity_type_manager;
     $this->fieldDisplayManager = $field_display_manager;
   }
 
@@ -101,7 +95,7 @@ class EntityReference extends WidgetBase implements ContainerFactoryPluginInterf
       $configuration['field_definition'],
       $configuration['settings'],
       $configuration['third_party_settings'],
-      $container->get('entity.manager'),
+      $container->get('entity_type.manager'),
       $container->get('event_dispatcher'),
       $container->get('plugin.manager.entity_browser.field_widget_display')
     );
@@ -129,7 +123,7 @@ class EntityReference extends WidgetBase implements ContainerFactoryPluginInterf
 
     $browsers = [];
     /** @var \Drupal\entity_browser\EntityBrowserInterface $browser */
-    foreach ($this->entityManager->getStorage('entity_browser')->loadMultiple() as $browser) {
+    foreach ($this->entityTypeManager->getStorage('entity_browser')->loadMultiple() as $browser) {
       $browsers[$browser->id()] = $browser->label();
     }
 
@@ -141,7 +135,7 @@ class EntityReference extends WidgetBase implements ContainerFactoryPluginInterf
     ];
 
     $target_type = $this->fieldDefinition->getFieldStorageDefinition()->getSetting('target_type');
-    $entity_type = \Drupal::entityTypeManager()->getStorage($target_type)->getEntityType();
+    $entity_type = $this->entityTypeManager->getStorage($target_type)->getEntityType();
 
     $displays = [];
     foreach ($this->fieldDisplayManager->getDefinitions() as $id => $definition) {
@@ -165,19 +159,19 @@ class EntityReference extends WidgetBase implements ContainerFactoryPluginInterf
     $element['field_widget_edit'] = [
       '#title' => t('Display Edit button'),
       '#type' => 'checkbox',
-      '#default_value' => $this->getSetting('field_widget_edit')
+      '#default_value' => $this->getSetting('field_widget_edit'),
     ];
 
     $element['field_widget_remove'] = [
       '#title' => t('Display Remove button'),
       '#type' => 'checkbox',
-      '#default_value' => $this->getSetting('field_widget_remove')
+      '#default_value' => $this->getSetting('field_widget_remove'),
     ];
 
     $element['open'] = [
       '#title' => t('Show widget details as open by default'),
       '#type' => 'checkbox',
-      '#default_value' => $this->getSetting('open')
+      '#default_value' => $this->getSetting('open'),
     ];
 
     $element['field_widget_display_settings'] = [
@@ -225,9 +219,10 @@ class EntityReference extends WidgetBase implements ContainerFactoryPluginInterf
       return [t('No entity browser selected.')];
     }
     else {
-      if ($browser = $this->entityManager->getStorage('entity_browser')->load($entity_browser_id)) {
+      if ($browser = $this->entityTypeManager->getStorage('entity_browser')->load($entity_browser_id)) {
         $summary[] = t('Entity browser: @browser', ['@browser' => $browser->label()]);
-      } else {
+      }
+      else {
         drupal_set_message(t('Missing entity browser!'), 'error');
         return [t('Missing entity browser!')];
       }
@@ -289,7 +284,7 @@ class EntityReference extends WidgetBase implements ContainerFactoryPluginInterf
    */
   function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
     $entity_type = $this->fieldDefinition->getFieldStorageDefinition()->getSetting('target_type');
-    $entity_storage = $this->entityManager->getStorage($entity_type);
+    $entity_storage = $this->entityTypeManager->getStorage($entity_type);
 
     $ids = [];
     $entities = [];
@@ -305,7 +300,8 @@ class EntityReference extends WidgetBase implements ContainerFactoryPluginInterf
         // need to check if submit came from this instance.
         $field_name_key = end($trigger['#parents']) === 'target_id' ? 2 : static::$deleteDepth + 1;
         $field_name_key = sizeof($trigger['#parents']) - $field_name_key;
-        $is_relevant_submit &= ($trigger['#parents'][$field_name_key] === $this->fieldDefinition->getName());
+        $is_relevant_submit &= ($trigger['#parents'][$field_name_key] === $this->fieldDefinition->getName()) &&
+          (array_slice($trigger['#parents'], 0, count($element['#field_parents'])) == $element['#field_parents']);
       }
     };
 
@@ -357,7 +353,7 @@ class EntityReference extends WidgetBase implements ContainerFactoryPluginInterf
     $hidden_id = Html::getUniqueId('edit-' . $this->fieldDefinition->getName() . '-target-id');
     $details_id = Html::getUniqueId('edit-' . $this->fieldDefinition->getName());
     /** @var \Drupal\entity_browser\EntityBrowserInterface $entity_browser */
-    $entity_browser = $this->entityManager->getStorage('entity_browser')->load($this->getSetting('entity_browser'));
+    $entity_browser = $this->entityTypeManager->getStorage('entity_browser')->load($this->getSetting('entity_browser'));
 
     $element += [
       '#id' => $details_id,
@@ -385,13 +381,14 @@ class EntityReference extends WidgetBase implements ContainerFactoryPluginInterf
       $entity_browser_uuid = sha1(implode('-', array_merge($form['#parents'], [$this->fieldDefinition->getName(), $delta])));
       $entity_browser_display = $entity_browser->getDisplay();
       $entity_browser_display->setUuid($entity_browser_uuid);
-      $element['entity_browser'] = $entity_browser_display->displayEntityBrowser($form_state);
+
+      $element['entity_browser'] = $entity_browser_display->displayEntityBrowser($form_state, []);
       $element['#attached']['library'][] = 'entity_browser/entity_reference';
       $element['#attached']['drupalSettings']['entity_browser'] = [
         $entity_browser->getDisplay()->getUuid() => [
           'cardinality' => $this->fieldDefinition->getFieldStorageDefinition()->getCardinality(),
-          'selector' => '#'.$element['target_id']['#attributes']['id'],
-        ]
+          'selector' => '#' . $element['target_id']['#attributes']['id'],
+        ],
       ];
     }
 
@@ -435,6 +432,19 @@ class EntityReference extends WidgetBase implements ContainerFactoryPluginInterf
   }
 
   /**
+   * {@inheritdoc}
+   */
+  public function errorElement(array $element, ConstraintViolationInterface $violation, array $form, FormStateInterface $form_state) {
+    if (($trigger = $form_state->getTriggeringElement())) {
+      // Can be triggered by "Remove" button.
+      if (end($trigger['#parents']) === 'remove_button') {
+        return FALSE;
+      }
+    }
+    return parent::errorElement($element, $violation, $form, $form_state);
+  }
+
+  /**
    * Submit callback for remove buttons.
    */
   public static function removeItemSubmit(&$form, FormStateInterface $form_state) {
@@ -448,7 +458,9 @@ class EntityReference extends WidgetBase implements ContainerFactoryPluginInterf
       $values = explode(' ', $form_state->getValue(array_merge($parents, ['target_id'])));
       $values = array_filter(
         $values,
-        function($item) use ($id) { return $item != $id; }
+        function($item) use ($id) {
+          return $item != $id;
+        }
       );
       $values = implode(' ', $values);
 
@@ -494,7 +506,7 @@ class EntityReference extends WidgetBase implements ContainerFactoryPluginInterf
             '#theme_wrappers' => ['container'],
             '#attributes' => [
               'class' => ['item-container', Html::getClass($field_widget_display->getPluginId())],
-              'data-entity-id' => $entity->id()
+              'data-entity-id' => $entity->id(),
             ],
             'display' => $display,
             'remove_button' => [
@@ -508,7 +520,7 @@ class EntityReference extends WidgetBase implements ContainerFactoryPluginInterf
               '#name' => $this->fieldDefinition->getName() . '_remove_' . $entity->id(),
               '#limit_validation_errors' => [array_merge($field_parents, [$this->fieldDefinition->getName()])],
               '#attributes' => ['data-entity-id' => $entity->id()],
-              '#access' => (bool) $this->getSetting('field_widget_remove')
+              '#access' => (bool) $this->getSetting('field_widget_remove'),
             ],
             'edit_button' => [
               '#type' => 'submit',
@@ -516,17 +528,18 @@ class EntityReference extends WidgetBase implements ContainerFactoryPluginInterf
               '#ajax' => [
                 'url' => Url::fromRoute(
                   'entity_browser.edit_form', [
-                  'entity_type' => $entity->getEntityTypeId(),
-                  'entity' => $entity->id()
-                ]
-                )
+                    'entity_type' => $entity->getEntityTypeId(),
+                    'entity' => $entity->id(),
+                  ]
+                ),
               ],
-              '#access' => (bool) $this->getSetting('field_widget_edit')
-            ]
+              '#access' => (bool) $this->getSetting('field_widget_edit'),
+            ],
           ];
         },
         $entities
       ),
     ];
   }
+
 }

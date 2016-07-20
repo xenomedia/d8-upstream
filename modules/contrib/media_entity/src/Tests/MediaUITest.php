@@ -23,6 +23,13 @@ class MediaUITest extends WebTestBase {
   protected $adminUser;
 
   /**
+   * A non-admin test user.
+   *
+   * @var \Drupal\User\UserInterface
+   */
+  protected $nonAdminUser;
+
+  /**
    * Modules to enable.
    *
    * @var array
@@ -56,6 +63,20 @@ class MediaUITest extends WebTestBase {
       'view all revisions',
     ]);
     $this->drupalLogin($this->adminUser);
+
+    $this->nonAdminUser = $this->drupalCreateUser([
+      // Media entity permissions.
+      'view media',
+      'create media',
+      'update media',
+      'update any media',
+      'delete media',
+      'delete any media',
+      'access media overview',
+      // Other permissions.
+      'administer views',
+      'access content overview',
+    ]);
   }
 
   /**
@@ -86,7 +107,7 @@ class MediaUITest extends WebTestBase {
     $this->assertText('Published: Entities will be automatically published when they are created.', 'Published help text found');
     $this->assertText("This type provider doesn't need configuration.");
     $this->assertText('No metadata fields available.');
-    $this->assertText('Media type plugins can provide metadata fields such as title, caption, size information, credits, ... Media entity can automatically save this metadata information to entity fields, which can be configured blow. Information will only be mapped if the entity field is empty.');
+    $this->assertText('Media type plugins can provide metadata fields such as title, caption, size information, credits, ... Media entity can automatically save this metadata information to entity fields, which can be configured below. Information will only be mapped if the entity field is empty.');
 
     // Try to change media type and check if new configuration sub-form appears.
     $commands = $this->drupalPostAjaxForm(NULL, ['type' => 'test_type'], 'type');
@@ -208,13 +229,35 @@ class MediaUITest extends WebTestBase {
     $this->assertResponse(200);
     $this->assertText($edit['name[0][value]']);
 
+    // Test that there is no empty vertical tabs element, if the container is
+    // empty (see #2750697).
+    // Make the "Publisher ID" and "Created" fields hidden.
+    $edit = [
+      'fields[created][type]' => 'hidden',
+      'fields[uid][type]' => 'hidden',
+    ];
+    $this->drupalPostForm('/admin/structure/media/manage/' . $bundle->id . '/form-display', $edit, t('Save'));
+    // Assure we are testing with a user without permission to manage revisions.
+    $this->drupalLogout();
+    $this->drupalLogin($this->nonAdminUser);
+    // Check the container is not present.
+    $this->drupalGet('media/' . $media_id . '/edit');
+    // An empty tab container would look like this.
+    $raw_html = '<div data-drupal-selector="edit-advanced" data-vertical-tabs-panes><input class="vertical-tabs__active-tab" data-drupal-selector="edit-advanced-active-tab" type="hidden" name="advanced__active_tab" value="" />' . "\n" . '</div>';
+    $this->assertNoRaw($raw_html);
+    // Continue testing as admin.
+    $this->drupalLogout();
+    $this->drupalLogin($this->adminUser);
+
     // Enable revisions by default.
     $bundle->setNewRevision(TRUE);
     $bundle->save();
     $this->drupalGet('media/' . $media_id . '/edit');
     $this->assertFieldChecked('edit-revision', 'New revisions are disabled by default.');
-    $edit['name[0][value]'] = $this->randomMachineName();
-    $edit['revision_log'] = $this->randomString();
+    $edit = [
+      'name[0][value]' => $this->randomMachineName(),
+      'revision_log' => $this->randomString(),
+    ];
     $this->drupalPostForm(NULL, $edit, t('Save and keep published'));
     $this->assertTitle($edit['name[0][value]'] . ' | Drupal');
     /** @var \Drupal\media_entity\MediaInterface $media */

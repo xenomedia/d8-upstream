@@ -26,7 +26,7 @@ class ConfigUITest extends WebTestBase {
    *
    * @var array
    */
-  public static $modules = ['entity_browser', 'ctools', 'block'];
+  public static $modules = ['entity_browser', 'ctools', 'block', 'views'];
 
   /**
    * {@inheritdoc}
@@ -88,6 +88,16 @@ class ConfigUITest extends WebTestBase {
     // Selection display step.
     $this->assertUrl('/admin/config/content/entity_browser/test_entity_browser/selection_display', ['query' => ['js' => 'nojs']]);
     $this->assertText('This plugin has no configuration options.');
+    $this->drupalPostForm(NULL, [], 'Previous');
+
+    // Widget selector step again.
+    $this->assertUrl('/admin/config/content/entity_browser/test_entity_browser/widget_selector', ['query' => ['js' => 'nojs']]);
+    $this->assertText('This plugin has no configuration options.');
+    $this->drupalPostForm(NULL, [], 'Next');
+
+    // Selection display step.
+    $this->assertUrl('/admin/config/content/entity_browser/test_entity_browser/selection_display', ['query' => ['js' => 'nojs']]);
+    $this->assertText('This plugin has no configuration options.');
     $this->drupalPostForm(NULL, [], 'Next');
 
     // Widgets step.
@@ -95,6 +105,18 @@ class ConfigUITest extends WebTestBase {
     $this->drupalPostAjaxForm(NULL, ['widget' => 'upload'], 'widget');
     $this->assertText('You can use tokens in the upload location.');
     $this->assertLink('Browse available tokens.');
+
+    // Make sure that removing of widgets works.
+    $this->drupalPostAjaxForm(NULL, ['widget' => 'view'], 'widget');
+    $this->assertText('View : View display', 'View selection dropdown label found.');
+    $this->assertRaw('- Select a view -', 'Empty option appears in the view selection dropdown.');
+    $delete_buttons = $this->xpath("//input[@value='Delete']");
+    $delete_button_name = (string) $delete_buttons[1]->attributes()['name'];
+    $this->drupalPostAjaxForm(NULL, [], [$delete_button_name => 'Delete']);
+    $this->assertNoText('View : View display', 'View widget was removed.');
+    $this->assertNoRaw('- Select a view -', 'View widget was removed.');
+    $this->assertEqual(count($this->xpath("//input[@value='Delete']")), 1, 'Only one delete button appears on the page.');
+
     $this->drupalPostForm(NULL, [], 'Finish');
 
     // Back on listing page.
@@ -142,24 +164,24 @@ class ConfigUITest extends WebTestBase {
     $this->assertOptionSelected('edit-selection-display', 'no_display', 'Correct selection display selected.');
     $this->assertFieldByName('submit_text', 'Different Select', 'Correct select button text.');
 
-    $this->drupalPostForm(NULL,[], 'Next');
+    $this->drupalPostForm(NULL, [], 'Next');
     $this->assertUrl('/admin/config/content/entity_browser/test_entity_browser/display', ['query' => ['js' => 'nojs']]);
     $this->assertFieldById('edit-width', '100', 'Correct value for width found.');
     $this->assertFieldById('edit-height', '100', 'Correct value for height found.');
     $this->assertFieldById('edit-link-text', 'All animals are created equal', 'Correct value for link text found.');
     $this->assertFieldChecked('edit-auto-open', 'Auto open is enabled.');
 
-    $this->drupalPostForm(NULL,[], 'Next');
+    $this->drupalPostForm(NULL, [], 'Next');
     $this->assertUrl('/admin/config/content/entity_browser/test_entity_browser/widget_selector', ['query' => ['js' => 'nojs']]);
 
-    $this->drupalPostForm(NULL,[], 'Next');
+    $this->drupalPostForm(NULL, [], 'Next');
     $this->assertUrl('/admin/config/content/entity_browser/test_entity_browser/selection_display', ['query' => ['js' => 'nojs']]);
 
-    $this->drupalPostForm(NULL,[], 'Next');
+    $this->drupalPostForm(NULL, [], 'Next');
     $this->assertFieldById('edit-table-' . $uuid . '-label', 'upload', 'Correct value for widget label found.');
     $this->assertFieldById('edit-table-' . $uuid . '-form-upload-location', 'public://', 'Correct value for upload location found.');
 
-    $this->drupalPostForm(NULL,[], 'Finish');
+    $this->drupalPostForm(NULL, [], 'Finish');
 
     $this->drupalLogout();
     $this->drupalGet('/admin/config/content/entity_browser/test_entity_browser');

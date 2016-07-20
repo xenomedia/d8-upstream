@@ -1,14 +1,10 @@
 <?php
-/**
- * @file
- * Contains \Drupal\entity_browser\Controllers\EntityBrowserController.
- */
 
 namespace Drupal\entity_browser\Controllers;
 
 use Drupal\Core\Ajax\AjaxResponse;
-use Drupal\Core\Ajax\CloseModalDialogCommand;
-use Drupal\Core\Ajax\OpenModalDialogCommand;
+use Drupal\Core\Ajax\CloseDialogCommand;
+use Drupal\Core\Ajax\OpenDialogCommand;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Form\FormState;
 use Drupal\Core\Entity\EntityInterface;
@@ -30,7 +26,7 @@ class EntityBrowserController extends ControllerBase {
    */
   public function entityBrowserEdit(EntityInterface $entity) {
     // Build the entity edit form.
-    $form_object = $this->entityManager()->getFormObject($entity->getEntityTypeId(), 'edit');
+    $form_object = $this->entityTypeManager()->getFormObject($entity->getEntityTypeId(), 'edit');
     $form_object->setEntity($entity);
     $form_state = (new FormState())
       ->setFormObject($form_object)
@@ -43,12 +39,12 @@ class EntityBrowserController extends ControllerBase {
       // Return the form as a modal dialog.
       $form['#attached']['library'][] = 'core/drupal.dialog.ajax';
       $title = $this->t('Edit entity @entity', ['@entity' => $entity->label()]);
-      $response = AjaxResponse::create()->addCommand(new OpenModalDialogCommand($title, $form, ['width' => 800]));
+      $response = AjaxResponse::create()->addCommand(new OpenDialogCommand('#' . $entity->getEntityTypeId() . '-' . $entity->id() . '-edit-dialog', $title, $form, ['modal' => TRUE, 'width' => 800]));
       return $response;
     }
     else {
       // Return command for closing the modal.
-      return AjaxResponse::create()->addCommand(new CloseModalDialogCommand());
+      return AjaxResponse::create()->addCommand(new CloseDialogCommand('#' . $entity->getEntityTypeId() . '-' . $entity->id() . '-edit-dialog'));
     }
   }
 

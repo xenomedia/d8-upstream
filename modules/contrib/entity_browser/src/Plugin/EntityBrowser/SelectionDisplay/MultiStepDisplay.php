@@ -2,8 +2,7 @@
 
 namespace Drupal\entity_browser\Plugin\EntityBrowser\SelectionDisplay;
 
-use Drupal\Component\Utility\Html;
-use Drupal\Core\Entity\EntityManagerInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\entity_browser\FieldWidgetDisplayManager;
 use Drupal\entity_browser\SelectionDisplayBase;
@@ -39,13 +38,13 @@ class MultiStepDisplay extends SelectionDisplayBase {
    *   The plugin implementation definition.
    * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $event_dispatcher
    *   Event dispatcher service.
-   * @param \Drupal\Core\Entity\EntityManagerInterface
-   *   Entity manager service.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface
+   *   The entity type manager service.
    * @param \Drupal\entity_browser\FieldWidgetDisplayManager $field_display_manager
    *   Field widget display plugin manager.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, EventDispatcherInterface $event_dispatcher, EntityManagerInterface $entity_manager, FieldWidgetDisplayManager $field_display_manager) {
-    parent::__construct($configuration, $plugin_id, $plugin_definition, $event_dispatcher, $entity_manager);
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, EventDispatcherInterface $event_dispatcher, EntityTypeManagerInterface $entity_type_manager, FieldWidgetDisplayManager $field_display_manager) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition, $event_dispatcher, $entity_type_manager);
     $this->fieldDisplayManager = $field_display_manager;
   }
 
@@ -58,10 +57,11 @@ class MultiStepDisplay extends SelectionDisplayBase {
       $plugin_id,
       $plugin_definition,
       $container->get('event_dispatcher'),
-      $container->get('entity.manager'),
+      $container->get('entity_type.manager'),
       $container->get('plugin.manager.entity_browser.field_widget_display')
     );
   }
+
   /**
    * {@inheritdoc}
    */
@@ -70,6 +70,7 @@ class MultiStepDisplay extends SelectionDisplayBase {
       'entity_type' => 'node',
       'display' => 'label',
       'display_settings' => [],
+      'select_text' => 'Use selected',
     ] + parent::defaultConfiguration();
   }
 
@@ -84,7 +85,7 @@ class MultiStepDisplay extends SelectionDisplayBase {
     $form['selected'] = [
       '#theme_wrappers' => ['container'],
       '#attributes' => ['class' => ['entities-list']],
-      '#tree' => TRUE
+      '#tree' => TRUE,
     ];
     foreach ($selected_entities as $id => $entity) {
       $display_plugin = $this->fieldDisplayManager->createInstance(
@@ -96,11 +97,11 @@ class MultiStepDisplay extends SelectionDisplayBase {
         $display = ['#markup' => $display];
       }
 
-      $form['selected']['items_'. $entity->id()] = [
+      $form['selected']['items_' . $entity->id()] = [
         '#theme_wrappers' => ['container'],
         '#attributes' => [
           'class' => ['item-container'],
-          'data-entity-id' => $entity->id()
+          'data-entity-id' => $entity->id(),
         ],
         'display' => $display,
         'remove_button' => [
@@ -111,20 +112,21 @@ class MultiStepDisplay extends SelectionDisplayBase {
           '#attributes' => [
             'data-row-id' => $id,
             'data-remove-entity' => 'items_' . $entity->id(),
-          ]
+          ],
         ],
         'weight' => [
           '#type' => 'hidden',
           '#default_value' => $id,
-          '#attributes' => ['class' => ['weight']]
-        ]
+          '#attributes' => ['class' => ['weight']],
+        ],
       ];
     }
-    $form['use_selected'] = array(
+    $form['use_selected'] = [
       '#type' => 'submit',
-      '#value' => t('Use selected'),
+      '#value' => $this->t($this->configuration['select_text']),
       '#name' => 'use_selected',
-    );
+      '#access' => empty($selected_entities) ? FALSE : TRUE,
+    ];
 
     return $form;
   }
@@ -198,7 +200,7 @@ class MultiStepDisplay extends SelectionDisplayBase {
     $form['#suffix'] = '</div>';
 
     $entity_types = [];
-    foreach ($this->entityManager->getDefinitions() as $entity_type_id => $entity_type) {
+    foreach ($this->entityTypeManager->getDefinitions() as $entity_type_id => $entity_type) {
       /** @var \Drupal\Core\Entity\EntityTypeInterface $entity_type */
       $entity_types[$entity_type_id] = $entity_type->getLabel();
     }
@@ -216,7 +218,7 @@ class MultiStepDisplay extends SelectionDisplayBase {
 
     $displays = [];
     foreach ($this->fieldDisplayManager->getDefinitions() as $display_plugin_id => $definition) {
-      $entity_type = $this->entityManager->getDefinition($default_entity_type);
+      $entity_type = $this->entityTypeManager->getDefinition($default_entity_type);
       if ($this->fieldDisplayManager->createInstance($display_plugin_id)->isApplicable($entity_type)) {
         $displays[$display_plugin_id] = $definition['label'];
       }
@@ -243,6 +245,12 @@ class MultiStepDisplay extends SelectionDisplayBase {
 
       $form['display_settings'] += $display_plugin->settingsForm($form, $form_state);
     }
+    $form['select_text'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Select button text'),
+      '#default_value' => $this->configuration['select_text'],
+      '#description' => $this->t('Text to display on the entity browser select button.'),
+    ];
 
     return $form;
   }

@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\entity_browser\DisplayInterface.
- */
-
 namespace Drupal\entity_browser;
 
 use Drupal\Component\Plugin\ConfigurablePluginInterface;
@@ -41,11 +36,13 @@ interface DisplayInterface extends PluginInspectionInterface, ConfigurablePlugin
    *
    * @param \Drupal\Core\Form\FormStateInterface $form_state
    *   The form state object.
+   * @param \Drupal\Core\Entity\EntityInterface[] $entities
+   *   (optional) Existing selection that should be passed to the entity browser.
    *
    * @return array
    *   An array suitable for drupal_render().
    */
-  public function displayEntityBrowser(FormStateInterface $form_state);
+  public function displayEntityBrowser(FormStateInterface $form_state, array $entities = []);
 
   /**
    * Indicates completed selection.
@@ -55,7 +52,6 @@ interface DisplayInterface extends PluginInspectionInterface, ConfigurablePlugin
    * the initiating code.
    *
    * @param \Drupal\Core\Entity\EntityInterface[] $entities
-   *
    */
   public function selectionCompleted(array $entities);
 

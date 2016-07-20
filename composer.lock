@@ -4,21 +4,21 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "ca6f20adffad8ae18f76e15efa2f6e67",
-    "content-hash": "47c5d11172760229db907508827d9b0f",
+    "hash": "be64cfab243af0e12bc67d7759422206",
+    "content-hash": "fc2c3bead05547a1afe9456792d21e2a",
     "packages": [
         {
             "name": "composer/installers",
-            "version": "v1.0.25",
+            "version": "v1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/installers.git",
-                "reference": "36e5b5843203d7f1cf6ffb0305a97e014387bd8e"
+                "reference": "a3595c5272a6f247228abb20076ed27321e4aae9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/installers/zipball/36e5b5843203d7f1cf6ffb0305a97e014387bd8e",
-                "reference": "36e5b5843203d7f1cf6ffb0305a97e014387bd8e",
+                "url": "https://api.github.com/repos/composer/installers/zipball/a3595c5272a6f247228abb20076ed27321e4aae9",
+                "reference": "a3595c5272a6f247228abb20076ed27321e4aae9",
                 "shasum": ""
             },
             "require": {
@@ -65,6 +65,7 @@
                 "MODX Evo",
                 "Mautic",
                 "OXID",
+                "RadPHP",
                 "SMF",
                 "Thelia",
                 "WolfCMS",
@@ -80,6 +81,7 @@
                 "dokuwiki",
                 "drupal",
                 "elgg",
+                "expressionengine",
                 "fuelphp",
                 "grav",
                 "installer",
@@ -105,7 +107,7 @@
                 "zend",
                 "zikula"
             ],
-            "time": "2016-04-13 19:46:30"
+            "time": "2016-07-05 06:18:20"
         },
         {
             "name": "composer/semver",
@@ -654,15 +656,15 @@
         },
         {
             "name": "drupal/acquia_connector",
-            "version": "8.1.2",
+            "version": "8.1.3",
             "source": {
                 "type": "git",
                 "url": "https://git.drupal.org/project/acquia_connector",
-                "reference": "d316a01f15466dc322cc81f0e2dce4cddbf0db4b"
+                "reference": "27291c409c70def252bb4426835aeb62ce6f0c74"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/acquia_connector-8.x-1.2.zip",
+                "url": "https://ftp.drupal.org/files/projects/acquia_connector-8.x-1.3.zip",
                 "reference": null,
                 "shasum": null
             },
@@ -689,7 +691,51 @@
             ],
             "description": "Allows Drupal to securely communicate with the Acquia Subscription, and checks for updates to Acquia Drupal.",
             "homepage": "https://www.drupal.org/project/acquia_connector",
-            "time": "2016-06-27 14:42:58"
+            "time": "2016-07-14 13:17:54"
+        },
+        {
+            "name": "drupal/admin_toolbar",
+            "version": "8.1.15",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupal.org/project/admin_toolbar.git",
+                "reference": "f8380381183bc76babaec9dfe392511011d54904"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/admin_toolbar-8.x-1.15.zip",
+                "reference": null,
+                "shasum": null
+            },
+            "require": {
+                "drupal/core": "8.*",
+                "drupal/toolbar": "8.*"
+            },
+            "replace": {
+                "drupal/admin_toolbar_tools": "self.version"
+            },
+            "suggest": {
+                "drupal/core": "Required by drupal/admin_toolbar_tools"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "branch-alias": {
+                    "dev-8.x-1.x": "8.1.x-dev"
+                }
+            },
+            "notification-url": "https://packagist.drupal-composer.org/downloads/",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "Mohamed Anis Taktak",
+                    "homepage": "https://www.drupal.org/u/matio89"
+                }
+            ],
+            "description": "Provides a drop-down menu interface to the core Drupal Toolbar.",
+            "homepage": "http://drupal.org/project/admin_toolbar",
+            "time": "2016-05-23 11:35:45"
         },
         {
             "name": "drupal/config_update",
@@ -732,16 +778,16 @@
         },
         {
             "name": "drupal/core",
-            "version": "8.1.3",
+            "version": "8.1.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/drupal-composer/drupal-core.git",
-                "reference": "ac94c29c14d85c8e77f5cb1d0ab38036f5f25c9c"
+                "reference": "3870ff6a47e723e3dce857473329d2f143e88d93"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/drupal-composer/drupal-core/zipball/ac94c29c14d85c8e77f5cb1d0ab38036f5f25c9c",
-                "reference": "ac94c29c14d85c8e77f5cb1d0ab38036f5f25c9c",
+                "url": "https://api.github.com/repos/drupal-composer/drupal-core/zipball/3870ff6a47e723e3dce857473329d2f143e88d93",
+                "reference": "3870ff6a47e723e3dce857473329d2f143e88d93",
                 "shasum": ""
             },
             "require": {
@@ -750,7 +796,7 @@
                 "doctrine/common": "2.5.*",
                 "easyrdf/easyrdf": "0.9.*",
                 "egulias/email-validator": "1.2.*",
-                "guzzlehttp/guzzle": "~6.1",
+                "guzzlehttp/guzzle": "~6.2",
                 "masterminds/html5": "~2.1",
                 "paragonie/random_compat": "~1.0",
                 "php": ">=5.5.9",
@@ -796,8 +842,10 @@
                 "drupal/content_translation": "self.version",
                 "drupal/contextual": "self.version",
                 "drupal/core-annotation": "self.version",
+                "drupal/core-assertion": "self.version",
                 "drupal/core-bridge": "self.version",
                 "drupal/core-datetime": "self.version",
+                "drupal/core-dependency-injection": "self.version",
                 "drupal/core-diff": "self.version",
                 "drupal/core-discovery": "self.version",
                 "drupal/core-event-dispatcher": "self.version",
@@ -877,8 +925,7 @@
             "type": "drupal-core",
             "extra": {
                 "patches_applied": {
-                    "Plugin Lazy loading can cause usort warning": "https://www.drupal.org/files/issues/Iterating-through-array--2699157.patch",
-                    "Fixes Uncaught PHP Exception when selecting too many tests to be tested from UI": "https://www.drupal.org/files/issues/2575725-16.patch"
+                    "Plugin Lazy loading can cause usort warning": "https://www.drupal.org/files/issues/Iterating-through-array--2699157.patch"
                 }
             },
             "autoload": {
@@ -902,7 +949,7 @@
                 "GPL-2.0+"
             ],
             "description": "Drupal is an open source content management platform powering millions of websites and applications.",
-            "time": "2016-06-15 20:08:27"
+            "time": "2016-07-18 15:01:43"
         },
         {
             "name": "drupal/ctools",
@@ -949,15 +996,15 @@
         },
         {
             "name": "drupal/embed",
-            "version": "8.1.0-rc2",
+            "version": "8.1.0-rc3",
             "source": {
                 "type": "git",
                 "url": "https://git.drupal.org/project/embed.git",
-                "reference": "294666ad05ad930003308a5fcd1282cdeb63833a"
+                "reference": "135281965da85d0cfa04f3c0c77ce7821dfab662"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/embed-8.x-1.0-rc2.zip",
+                "url": "https://ftp.drupal.org/files/projects/embed-8.x-1.0-rc3.zip",
                 "reference": null,
                 "shasum": null
             },
@@ -976,7 +1023,7 @@
             ],
             "description": "Provides a framework for different types of embeds in text editors.",
             "homepage": "https://www.drupal.org/project/embed",
-            "time": "2016-04-14 01:03:52"
+            "time": "2016-07-10 18:43:18"
         },
         {
             "name": "drupal/entity",
@@ -1012,15 +1059,15 @@
         },
         {
             "name": "drupal/entity_browser",
-            "version": "8.1.0-alpha3",
+            "version": "8.1.0-alpha6",
             "source": {
                 "type": "git",
                 "url": "https://git.drupal.org/project/entity_browser.git",
-                "reference": "3d86431a6c70289b7b357875e8bf167a05e7dcc9"
+                "reference": "56342042745d7b73e052f0a7cdc7693ae02c295e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/entity_browser-8.x-1.0-alpha3.zip",
+                "url": "https://ftp.drupal.org/files/projects/entity_browser-8.x-1.0-alpha6.zip",
                 "reference": null,
                 "shasum": null
             },
@@ -1045,8 +1092,7 @@
                     "dev-8.x-1.x": "8.1.x-dev"
                 },
                 "patches_applied": {
-                    "2738843 - The view widget should support radio buttons": "https://www.drupal.org/files/issues/2738843-2.patch",
-                    "2741237 - The iframe display plugin should not put dashes in the iframe name": "https://www.drupal.org/files/issues/2741237-3.patch"
+                    "2738843 - The view widget should support radio buttons": "https://www.drupal.org/files/issues/2738843-7.patch"
                 }
             },
             "notification-url": "https://packagist.drupal-composer.org/downloads/",
@@ -1072,19 +1118,19 @@
             ],
             "description": "Provide a generic entity browser/picker/selector.",
             "homepage": "http://drupal.org/project/entity_browser",
-            "time": "2016-05-31 16:42:48"
+            "time": "2016-07-12 15:57:47"
         },
         {
             "name": "drupal/entity_embed",
-            "version": "8.1.0-alpha1",
+            "version": "8.1.0-alpha2",
             "source": {
                 "type": "git",
                 "url": "https://git.drupal.org/project/entity_embed.git",
-                "reference": "a40f556feaf921980f69d9fe4ccbc1ef2e325edb"
+                "reference": "c248cda0da575d6a9f5f979497852137a6d07811"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/entity_embed-8.x-1.0-alpha1.zip",
+                "url": "https://ftp.drupal.org/files/projects/entity_embed-8.x-1.0-alpha2.zip",
                 "reference": null,
                 "shasum": null
             },
@@ -1098,9 +1144,6 @@
             "extra": {
                 "branch-alias": {
                     "dev-8.x-1.x": "8.1.x-dev"
-                },
-                "patches_applied": {
-                    "2656062 - Hide Next button during Selection if Entity Browser is enabled": "https://www.drupal.org/files/issues/2656062-8.patch"
                 }
             },
             "notification-url": "https://packagist.drupal-composer.org/downloads/",
@@ -1109,19 +1152,19 @@
             ],
             "description": "Allows entities to be embedded using a text editor.",
             "homepage": "https://www.drupal.org/project/entity_embed",
-            "time": "2016-04-14 05:38:14"
+            "time": "2016-07-05 12:08:46"
         },
         {
             "name": "drupal/features",
-            "version": "8.3.0-beta5",
+            "version": "8.3.0-beta6",
             "source": {
                 "type": "git",
                 "url": "https://git.drupal.org/project/features",
-                "reference": "6d23d8e5b3e69c879e4b02c0e6ca52eba44260c6"
+                "reference": "245b7175b971e4239e3ee5685ca7c92942bf8a6e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/features-8.x-3.0-beta5.zip",
+                "url": "https://ftp.drupal.org/files/projects/features-8.x-3.0-beta6.zip",
                 "reference": null,
                 "shasum": null
             },
@@ -1148,7 +1191,38 @@
             ],
             "description": "Enables administrators to package configuration into modules.",
             "homepage": "https://www.drupal.org/project/features",
-            "time": "2016-06-09 14:12:34"
+            "time": "2016-07-08 12:53:14"
+        },
+        {
+            "name": "drupal/field_formatter",
+            "version": "8.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupal.org/project/field_formatter.git",
+                "reference": "66df2238db0b0b95c4da53d69197afcd9768de56"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/field_formatter-8.x-1.0-rc1.zip",
+                "reference": null,
+                "shasum": null
+            },
+            "require": {
+                "drupal/core": "8.*"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "branch-alias": {
+                    "dev-8.x-1.x": "8.1.x-dev"
+                }
+            },
+            "notification-url": "https://packagist.drupal-composer.org/downloads/",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "description": "Collection of general formatters that display a single field from the referenced entity.",
+            "homepage": "https://www.drupal.org/project/field_formatter",
+            "time": "2016-07-05 07:47:38"
         },
         {
             "name": "drupal/google_analytics",
@@ -1278,15 +1352,15 @@
         },
         {
             "name": "drupal/lightning",
-            "version": "8.1.00",
+            "version": "8.1.02",
             "source": {
                 "type": "git",
                 "url": "https://git.drupal.org/project/lightning.git",
-                "reference": "4bfd6e2d046646a45785bc75ba725cdf10e006e7"
+                "reference": "04b967e8b8fa6d65710faeb4ca2b8d3914b947cf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/lightning-8.x-1.00.zip",
+                "url": "https://ftp.drupal.org/files/projects/lightning-8.x-1.02.zip",
                 "reference": null,
                 "shasum": null
             },
@@ -1309,8 +1383,8 @@
                 "drupal/editor": "8.*",
                 "drupal/embed": "^8.1.0",
                 "drupal/entity": "8.1.0-alpha3",
-                "drupal/entity_browser": "8.1.0-alpha3",
-                "drupal/entity_embed": "8.1.0-alpha1",
+                "drupal/entity_browser": "8.1.0-alpha6",
+                "drupal/entity_embed": "^8.1.0",
                 "drupal/entity_reference": "8.*",
                 "drupal/features": "^8.3.0",
                 "drupal/field_ui": "8.*",
@@ -1324,7 +1398,7 @@
                 "drupal/media_entity_document": "^8.1.0",
                 "drupal/media_entity_image": "^8.1.0",
                 "drupal/media_entity_instagram": "^8.1.0",
-                "drupal/media_entity_twitter": "^8.1.0",
+                "drupal/media_entity_twitter": "~8.1.1",
                 "drupal/menu_link_content": "8.*",
                 "drupal/menu_ui": "8.*",
                 "drupal/metatag": "^8.1.0",
@@ -1348,7 +1422,7 @@
                 "drupal/views": "8.*",
                 "drupal/views_infinite_scroll": "~8.1.0",
                 "drupal/views_ui": "8.*",
-                "drupal/workbench_moderation": "~8.1.0"
+                "drupal/workbench_moderation": "~8.1.1"
             },
             "replace": {
                 "drupal/lightning_core": "self.version",
@@ -1367,7 +1441,7 @@
                 "behat/mink-goutte-driver": "~1.2",
                 "drupal/coder": "8.*",
                 "drupal/devel": "^8.0.0",
-                "drupal/drupal-extension": "3.1.5",
+                "drupal/drupal-extension": "^3.2",
                 "drush/drush": "^9.0",
                 "jakoch/phantomjs-installer": "1.9.8",
                 "jcalderonzumba/gastonjs": "~1.0.2",
@@ -1375,6 +1449,7 @@
                 "mikey179/vfsstream": "~1.2",
                 "phing/phing": "^2.14",
                 "phpunit/phpunit": "~4.8",
+                "squizlabs/php_codesniffer": "2.*",
                 "symfony/css-selector": "~2.8"
             },
             "suggest": {
@@ -1417,11 +1492,13 @@
                         "2747739 - Mega patch": "https://www.drupal.org/files/issues/ctools--8.x-3.0-alpha26--1fe3649.patch"
                     },
                     "drupal/entity_browser": {
-                        "2738843 - The view widget should support radio buttons": "https://www.drupal.org/files/issues/2738843-2.patch",
-                        "2741237 - The iframe display plugin should not put dashes in the iframe name": "https://www.drupal.org/files/issues/2741237-3.patch"
+                        "2738843 - The view widget should support radio buttons": "https://www.drupal.org/files/issues/2738843-7.patch"
                     },
-                    "drupal/entity_embed": {
-                        "2656062 - Hide Next button during Selection if Entity Browser is enabled": "https://www.drupal.org/files/issues/2656062-8.patch"
+                    "drupal/media_entity_twitter": {
+                        "2764411 - Tweets embedded in CKEditor do not load when selected from Entity Browser": "https://www.drupal.org/files/issues/2764411_4.patch"
+                    },
+                    "drupal/metatag": {
+                        "2765137 - hook_install() + drupal_set_message() = message displayed several times when using a distro.": "https://www.drupal.org/files/issues/2765137-2.patch"
                     },
                     "drupal/page_manager": {
                         "2747739 - Mega Patch": "https://www.drupal.org/files/issues/page_manager--alpha23-09e79ff--2747739-3.patch"
@@ -1430,13 +1507,13 @@
                         "2747739 - Mega Patch": "https://www.drupal.org/files/issues/panelizer--alpha2-1ddfa61--2747739-5.patch",
                         "2701349 - Generate new UUIDs for displays when switching from default to field storage": "https://www.drupal.org/files/issues/2701349-2.patch",
                         "2700597 - Explicitly set the Panels IPE URL root when saving in Panelizer": "https://www.drupal.org/files/issues/panelizer-ipe-url-root-handling.patch",
-                        "2664682 - Implement admin UI for editing Panelizer defaults": "https://www.drupal.org/files/issues/2664682-45.patch"
+                        "2664682 - Implement admin UI for editing Panelizer defaults": "https://www.drupal.org/files/issues/2664682-49.patch"
                     },
                     "drupal/panels": {
-                        "2747739 - Mega Patch": "https://www.drupal.org/files/issues/panels--beta4-4c4a3a7--2747739-2.patch",
+                        "2747739 - Mega Patch": "https://www.drupal.org/files/issues/panels--beta4-4c4a3a7--2747739-17--binary.patch",
                         "2667754 - Allow other modules to disable the IPE based on custom logic": "https://www.drupal.org/files/issues/2667754-3.patch",
                         "Bandaid tempstore patch": "https://www.drupal.org/files/issues/bandaid.patch",
-                        "2697587 - Wizard API integration": "https://www.drupal.org/files/issues/2697587-42.patch"
+                        "2697587 - Wizard API integration": "https://www.drupal.org/files/issues/2697587-48.patch"
                     },
                     "drupal/scheduled_updates": {
                         "2674874 - Issue saving Schedule Update Type form": "https://www.drupal.org/files/issues/schedule_updates-save_type-2674874-2.patch"
@@ -1448,7 +1525,8 @@
                         "2668006 - Provide logical access control for when IPE should be applied to moderated nodes": "https://www.drupal.org/files/issues/2668006-2.patch"
                     },
                     "drush/drush": {
-                        "Adding composer.json support to make-convert command": "https://github.com/drush-ops/drush/commit/ce82b946d49b09cd33da5ca84feb24a6c35f8f8e.patch"
+                        "Adding composer.json support to make-convert command": "https://github.com/drush-ops/drush/commit/ce82b946d49b09cd33da5ca84feb24a6c35f8f8e.patch",
+                        "The batch table may not exist by the time _drush_backend_batch_process() is called in 8.x-1.x": "https://github.com/drush-ops/drush/commit/c389aebb7d3e26ff0f544684d8b3ec3528107e55.diff"
                     }
                 },
                 "branch-alias": {
@@ -1461,29 +1539,25 @@
             ],
             "description": "A fast and feature-rich Drupal distribution.",
             "homepage": "https://www.drupal.org/project/lightning",
-            "time": "2016-06-18 21:16:29"
+            "time": "2016-07-18 17:33:17"
         },
         {
             "name": "drupal/media_entity",
-            "version": "8.1.1",
+            "version": "8.1.2",
             "source": {
                 "type": "git",
                 "url": "https://git.drupal.org/project/media_entity.git",
-                "reference": "ffe1b5991e203605ce468bda4bfd2c36acf4fc5f"
+                "reference": "8bc03edd625dc1ce7f7f6b770ce02e51f14cbcd2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/media_entity-8.x-1.1.zip",
+                "url": "https://ftp.drupal.org/files/projects/media_entity-8.x-1.2.zip",
                 "reference": null,
                 "shasum": null
             },
             "require": {
                 "drupal/core": "8.*",
-                "drupal/entity": ">=8.1.0-alpha3",
-                "drupal/image": "8.*",
-                "drupal/system": ">=8.1.0",
-                "drupal/user": "8.*",
-                "drupal/views": "8.*"
+                "drupal/entity": ">=8.1.0-alpha3"
             },
             "type": "drupal-module",
             "extra": {
@@ -1497,7 +1571,7 @@
             ],
             "description": "Media entity API.",
             "homepage": "https://www.drupal.org/project/media_entity",
-            "time": "2016-05-16 20:13:30"
+            "time": "2016-07-05 11:52:22"
         },
         {
             "name": "drupal/media_entity_document",
@@ -1598,15 +1672,15 @@
         },
         {
             "name": "drupal/media_entity_twitter",
-            "version": "8.1.0",
+            "version": "8.1.1",
             "source": {
                 "type": "git",
                 "url": "https://git.drupal.org/project/media_entity_twitter.git",
-                "reference": "ef412841b5666e07b09c1c5d3643597f2767aa84"
+                "reference": "ed5a40009d31deeaadb58df370c86af6de095d54"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/media_entity_twitter-8.x-1.0.zip",
+                "url": "https://ftp.drupal.org/files/projects/media_entity_twitter-8.x-1.1.zip",
                 "reference": null,
                 "shasum": null
             },
@@ -1619,6 +1693,9 @@
             "extra": {
                 "branch-alias": {
                     "dev-8.x-1.x": "8.1.x-dev"
+                },
+                "patches_applied": {
+                    "2764411 - Tweets embedded in CKEditor do not load when selected from Entity Browser": "https://www.drupal.org/files/issues/2764411_4.patch"
                 }
             },
             "notification-url": "https://packagist.drupal-composer.org/downloads/",
@@ -1627,7 +1704,7 @@
             ],
             "description": "Media entity Twitter provider.",
             "homepage": "https://www.drupal.org/project/media_entity_twitter",
-            "time": "2016-02-25 16:02:22"
+            "time": "2016-07-05 11:14:02"
         },
         {
             "name": "drupal/metatag",
@@ -2134,16 +2211,16 @@
         },
         {
             "name": "egulias/email-validator",
-            "version": "1.2.12",
+            "version": "1.2.13",
             "source": {
                 "type": "git",
                 "url": "https://github.com/egulias/EmailValidator.git",
-                "reference": "cbfe3ee6f758225559b1111048e05a3e4c2e26cf"
+                "reference": "b8bb147f46cc9790326ce2440a13be06cc5a63bb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/egulias/EmailValidator/zipball/cbfe3ee6f758225559b1111048e05a3e4c2e26cf",
-                "reference": "cbfe3ee6f758225559b1111048e05a3e4c2e26cf",
+                "url": "https://api.github.com/repos/egulias/EmailValidator/zipball/b8bb147f46cc9790326ce2440a13be06cc5a63bb",
+                "reference": "b8bb147f46cc9790326ce2440a13be06cc5a63bb",
                 "shasum": ""
             },
             "require": {
@@ -2182,31 +2259,31 @@
                 "validation",
                 "validator"
             ],
-            "time": "2016-05-15 10:06:34"
+            "time": "2016-07-03 21:52:18"
         },
         {
             "name": "guzzlehttp/guzzle",
-            "version": "6.2.0",
+            "version": "6.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/guzzle.git",
-                "reference": "d094e337976dff9d8e2424e8485872194e768662"
+                "reference": "3f808fba627f2c5b69e2501217bf31af349c1427"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/d094e337976dff9d8e2424e8485872194e768662",
-                "reference": "d094e337976dff9d8e2424e8485872194e768662",
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/3f808fba627f2c5b69e2501217bf31af349c1427",
+                "reference": "3f808fba627f2c5b69e2501217bf31af349c1427",
                 "shasum": ""
             },
             "require": {
-                "guzzlehttp/promises": "~1.0",
-                "guzzlehttp/psr7": "~1.1",
-                "php": ">=5.5.0"
+                "guzzlehttp/promises": "^1.0",
+                "guzzlehttp/psr7": "^1.3.1",
+                "php": ">=5.5"
             },
             "require-dev": {
                 "ext-curl": "*",
-                "phpunit/phpunit": "~4.0",
-                "psr/log": "~1.0"
+                "phpunit/phpunit": "^4.0",
+                "psr/log": "^1.0"
             },
             "type": "library",
             "extra": {
@@ -2244,7 +2321,7 @@
                 "rest",
                 "web service"
             ],
-            "time": "2016-03-21 20:02:09"
+            "time": "2016-07-15 17:22:37"
         },
         {
             "name": "guzzlehttp/promises",
@@ -4001,22 +4078,24 @@
         },
         {
             "name": "xenomedia/zeus",
-            "version": "v1.2.1",
+            "version": "8.1.02",
             "source": {
                 "type": "git",
                 "url": "https://github.com/xenomedia/zeus.git",
-                "reference": "db1cd0b1682a3a3d372d46b65cf03a05893c531b"
+                "reference": "4c8e20121d70b62b6d2861fb65e5181af2d3d097"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/xenomedia/zeus/zipball/db1cd0b1682a3a3d372d46b65cf03a05893c531b",
-                "reference": "db1cd0b1682a3a3d372d46b65cf03a05893c531b",
+                "url": "https://api.github.com/repos/xenomedia/zeus/zipball/4c8e20121d70b62b6d2861fb65e5181af2d3d097",
+                "reference": "4c8e20121d70b62b6d2861fb65e5181af2d3d097",
                 "shasum": ""
             },
             "require": {
                 "composer/installers": "^1.0",
+                "drupal/admin_toolbar": "8.*",
+                "drupal/field_formatter": "8.*",
                 "drupal/google_analytics": "8.2.*",
-                "drupal/lightning": "8.1.0",
+                "drupal/lightning": "8.1.02",
                 "drupal/metatag": "8.1.0-beta9",
                 "drupal/stage_file_proxy": "8.*"
             },
@@ -4037,11 +4116,6 @@
                     "modules/contrib/{$name}": [
                         "type:drupal-module"
                     ]
-                },
-                "patches": {
-                    "drupal/core": {
-                        "Fixes Uncaught PHP Exception when selecting too many tests to be tested from UI": "https://www.drupal.org/files/issues/2575725-16.patch"
-                    }
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -4049,7 +4123,7 @@
                 "GPL-2.0+"
             ],
             "description": "The best of Drupal, curated by Xeno Media",
-            "time": "2016-07-02 14:39:23"
+            "time": "2016-07-19 21:51:45"
         },
         {
             "name": "zendframework/zend-diactoros",
@@ -5119,16 +5193,16 @@
         },
         {
             "name": "mikey179/vfsStream",
-            "version": "v1.6.3",
+            "version": "v1.6.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mikey179/vfsStream.git",
-                "reference": "c19925cd0390d3c436a0203ae859afa460d0474b"
+                "reference": "0247f57b2245e8ad2e689d7cee754b45fbabd592"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mikey179/vfsStream/zipball/c19925cd0390d3c436a0203ae859afa460d0474b",
-                "reference": "c19925cd0390d3c436a0203ae859afa460d0474b",
+                "url": "https://api.github.com/repos/mikey179/vfsStream/zipball/0247f57b2245e8ad2e689d7cee754b45fbabd592",
+                "reference": "0247f57b2245e8ad2e689d7cee754b45fbabd592",
                 "shasum": ""
             },
             "require": {
@@ -5161,7 +5235,7 @@
             ],
             "description": "Virtual file system to mock the real file system in unit tests.",
             "homepage": "http://vfs.bovigo.org/",
-            "time": "2016-04-09 09:42:01"
+            "time": "2016-07-18 14:02:57"
         },
         {
             "name": "phpdocumentor/reflection-common",

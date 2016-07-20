@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\entity_embed\Tests\EntityEmbedDialogTest.
- */
-
 namespace Drupal\entity_embed\Tests;
 
 use Drupal\editor\Entity\Editor;
@@ -15,6 +10,13 @@ use Drupal\editor\Entity\Editor;
  * @group entity_embed
  */
 class EntityEmbedDialogTest extends EntityEmbedTestBase {
+
+  /**
+   * Modules to enable.
+   *
+   * @var array
+   */
+  public static $modules = ['image'];
 
   /**
    * Tests the entity embed dialog.
@@ -52,7 +54,7 @@ class EntityEmbedDialogTest extends EntityEmbedTestBase {
     $this->assertResponse(200, 'Embed dialog is accessible with correct filter format and embed button.');
 
     // Ensure form structure of the 'select' step and submit form.
-    $this->assertFieldByName('attributes[data-entity-id]', '', 'Entity ID/UUID field is present.');
+    $this->assertFieldByName('entity_id', '', 'Entity ID/UUID field is present.');
 
     // $edit = ['attributes[data-entity-id]' => $this->node->id()];
     // $this->drupalPostAjaxForm(NULL, $edit, 'op');
@@ -85,13 +87,13 @@ class EntityEmbedDialogTest extends EntityEmbedTestBase {
     $this->assertResponse(200, 'Embed dialog is accessible with correct filter format and embed button.');
 
     // Ensure form structure of the 'select' step and submit form.
-    $this->assertFieldByName('attributes[data-entity-id]', '', 'Entity ID/UUID field is present.');
+    $this->assertFieldByName('entity_id', '', 'Entity ID/UUID field is present.');
 
     // Check that 'Next' is a primary button.
     $this->assertFieldByXPath('//input[contains(@class, "button--primary")]', 'Next', 'Next is a primary button');
 
     $title =  $this->node->getTitle() . ' (' . $this->node->id() . ')';
-    $edit = ['attributes[data-entity-id]' => $title];
+    $edit = ['entity_id' => $title];
     $this->drupalPostAjaxForm(NULL, $edit, 'op');
     /*$this->drupalPostForm(NULL, $edit, 'Next');
     // Ensure form structure of the 'embed' step and submit form.
@@ -99,6 +101,20 @@ class EntityEmbedDialogTest extends EntityEmbedTestBase {
 
     // Check that 'Embed' is a primary button.
     $this->assertFieldByXPath('//input[contains(@class, "button--primary")]', 'Embed', 'Embed is a primary button');*/
+  }
+
+  /**
+   * Tests entity embed functionality.
+   */
+  public function testEntityEmbedFunctionality() {
+    $edit = [
+      'entity_id' => $this->node->getTitle() . ' (' . $this->node->id() . ')',
+    ];
+    $this->getEmbedDialog('custom_format', 'node');
+    $this->drupalPostForm(NULL, $edit, t('Next'));
+    // Tests that the embed dialog doesn't trow a fatal in
+    // ImageFieldFormatter::isValidImage()
+    $this->assertResponse(200);
   }
 
   /**

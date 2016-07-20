@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Contains \Drupal\entity_browser\Plugin\EntityBrowser\Widget\View.
- */
-
 namespace Drupal\entity_browser\Plugin\EntityBrowser\Widget;
 
 use Drupal\Component\Plugin\Exception\PluginNotFoundException;
@@ -16,7 +12,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Drupal\Core\Entity\EntityManagerInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 
 /**
  * Uses a view to provide entity listing in a browser's widget.
@@ -56,7 +52,7 @@ class View extends WidgetBase implements ContainerFactoryPluginInterface {
       $plugin_id,
       $plugin_definition,
       $container->get('event_dispatcher'),
-      $container->get('entity.manager'),
+      $container->get('entity_type.manager'),
       $container->get('current_user')
     );
   }
@@ -72,12 +68,14 @@ class View extends WidgetBase implements ContainerFactoryPluginInterface {
    *   The plugin implementation definition.
    * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $event_dispatcher
    *   Event dispatcher service.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   *   The entity type manager.
    * @param \Drupal\Core\Session\AccountInterface $current_user
    *   The current user.
    */
-   public function __construct(array $configuration, $plugin_id, $plugin_definition, EventDispatcherInterface $event_dispatcher, EntityManagerInterface $entity_manager, AccountInterface $current_user) {
-     parent::__construct($configuration, $plugin_id, $plugin_definition, $event_dispatcher, $entity_manager);
-     $this->currentUser = $current_user;
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, EventDispatcherInterface $event_dispatcher, EntityTypeManagerInterface $entity_type_manager, AccountInterface $current_user) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition, $event_dispatcher, $entity_type_manager);
+    $this->currentUser = $current_user;
   }
 
   /**
@@ -87,11 +85,10 @@ class View extends WidgetBase implements ContainerFactoryPluginInterface {
     $form = [];
     // TODO - do we need better error handling for view and view_display (in case
     // either of those is nonexistent or display not of correct type)?
-
     $form['#attached']['library'] = ['entity_browser/view'];
 
     /** @var \Drupal\views\ViewExecutable $view */
-    $view = $this->entityManager
+    $view = $this->entityTypeManager
       ->getStorage('view')
       ->load($this->configuration['view'])
       ->getExecutable();
@@ -117,7 +114,7 @@ class View extends WidgetBase implements ContainerFactoryPluginInterface {
     $form['view'] = $view->executeDisplay($this->configuration['view_display']);
 
     if (empty($view->field['entity_browser_select'])) {
-      $url = Url::fromRoute('entity.view.edit_form',['view'=>$this->configuration['view']])->toString();
+      $url = Url::fromRoute('entity.view.edit_form', ['view' => $this->configuration['view']])->toString();
       if ($this->currentUser->hasPermission('administer views')) {
         return [
           '#markup' => t('Entity browser select form field not found on a view. <a href=":link">Go fix it</a>!', [':link' => $url]),
@@ -160,6 +157,94 @@ class View extends WidgetBase implements ContainerFactoryPluginInterface {
   }
 
   /**
+   * {@inheritdoc}
+   */
+  public function validate(array &$form, FormStateInterface $form_state) {
+    $selected_rows = $this->getSelectedRows($form_state);
+
+    foreach ($selected_rows as $row) {
+      // Verify that the user input is a string and split it.
+      // Each $row is in the format entity_type:id.
+      if (is_string($row) && $parts = explode(':', $row, 2)) {
+        // Make sure we have a type and id present.
+        if (count($parts) == 2) {
+          try {
+            $storage = $this->entityTypeManager->getStorage($parts[0]);
+            if (!$storage->load($parts[1])) {
+              $message = t('The @type Entity @id does not exist.', [
+                '@type' => $parts[0],
+                '@id' => $parts[1],
+              ]);
+              $form_state->setError($form['widget']['view']['entity_browser_select'], $message);
+            }
+          }
+          catch (PluginNotFoundException $e) {
+            $message = t('The Entity Type @type does not exist.', [
+              '@type' => $parts[0],
+            ]);
+            $form_state->setError($form['widget']['view']['entity_browser_select'], $message);
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function submit(array &$element, array &$form, FormStateInterface $form_state) {
+    $selected_rows = $this->getSelectedRows($form_state);
+    $entities = [];
+    foreach ($selected_rows as $row) {
+      list($type, $id) = explode(':', $row);
+      $storage = $this->entityTypeManager->getStorage($type);
+      if ($entity = $storage->load($id)) {
+        $entities[] = $entity;
+      }
+    }
+
+    $this->selectEntities($entities, $form_state);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
+    $options = [];
+    // Get only those enabled Views that have entity_browser displays.
+    $displays = Views::getApplicableViews('entity_browser_display');
+    foreach ($displays as $display) {
+      list($view_id, $display_id) = $display;
+      $view = $this->entityTypeManager->getStorage('view')->load($view_id);
+      $options[$view_id . '.' . $display_id] = $this->t('@view : @display', array('@view' => $view->label(), '@display' => $view->get('display')[$display_id]['display_title']));
+    }
+
+    $form['view'] = [
+      '#type' => 'select',
+      '#title' => $this->t('View : View display'),
+      '#default_value' => $this->configuration['view'] . '.' . $this->configuration['view_display'],
+      '#options' => $options,
+      '#empty_option' => $this->t('- Select a view -'),
+      '#required' => TRUE,
+    ];
+
+    return $form;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
+    $values = $form_state->getValues()['table'][$this->uuid()]['form'];
+
+    if (!empty($values['view'])) {
+      list($view_id, $display_id) = explode('.', $values['view']);
+      $this->configuration['view'] = $view_id;
+      $this->configuration['view_display'] = $display_id;
+    }
+  }
+
+  /**
    * Returns the selected row(s).
    *
    * @param \Drupal\Core\Form\FormStateInterface $form_state
@@ -182,91 +267,5 @@ class View extends WidgetBase implements ContainerFactoryPluginInterface {
       return [];
     }
   }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function validate(array &$form, FormStateInterface $form_state) {
-    $selected_rows = $this->getSelectedRows($form_state);
-
-    foreach ($selected_rows as $row) {
-      // Verify that the user input is a string and split it.
-      // Each $row is in the format entity_type:id.
-      if (is_string($row) && $parts = explode(':', $row, 2)) {
-        // Make sure we have a type and id present.
-        if (count($parts) == 2) {
-          try {
-            $storage = $this->entityManager->getStorage($parts[0]);
-            if (!$storage->load($parts[1])) {
-              $message = t('The @type Entity @id does not exist.', [
-                '@type' => $parts[0],
-                '@id' => $parts[1]
-              ]);
-              $form_state->setError($form['widget']['view']['entity_browser_select'], $message);
-            }
-          } catch (PluginNotFoundException $e) {
-            $message = t('The Entity Type @type does not exist.', [
-              '@type' => $parts[0],
-            ]);
-            $form_state->setError($form['widget']['view']['entity_browser_select'], $message);
-          }
-        }
-      }
-    }
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function submit(array &$element, array &$form, FormStateInterface $form_state) {
-    $entities = [];
-    foreach ($this->getSelectedRows($form_state) as $row) {
-      list($type, $id) = explode(':', $row);
-      $storage = $this->entityManager->getStorage($type);
-      if ($entity = $storage->load($id)) {
-        $entities[] = $entity;
-      }
-    }
-
-    $this->selectEntities($entities, $form_state);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
-    $options = [];
-    // Get only those enabled Views that have entity_browser displays.
-    $displays = Views::getApplicableViews('entity_browser_display');
-    foreach ($displays as $display) {
-      list($view_id, $display_id) = $display;
-      $view = $this->entityManager->getStorage('view')->load($view_id);
-      $options[$view_id . '.' . $display_id] = $this->t('@view : @display', array('@view' => $view->label(), '@display' => $view->get('display')[$display_id]['display_title']));
-    }
-
-    $form['view'] = [
-      '#type' => 'select',
-      '#title' => $this->t('View : View display'),
-      '#default_value' => $this->configuration['view'] . '.' . $this->configuration['view_display'],
-      '#options' => $options,
-      '#required' => TRUE,
-    ];
-
-    return $form;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
-    $values = $form_state->getValues()['table'][$this->uuid()]['form'];
-
-    if (!empty($values['view'])) {
-      list($view_id, $display_id) = explode('.', $values['view']);
-      $this->configuration['view'] = $view_id;
-      $this->configuration['view_display'] = $display_id;
-    }
-  }
-
 
 }

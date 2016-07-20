@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\entity_browser\Plugin\EntityBrowser\WidgetSelector\Tabs.
- */
-
 namespace Drupal\entity_browser\Plugin\EntityBrowser\WidgetSelector;
 
 use Drupal\entity_browser\WidgetSelectorBase;
@@ -42,16 +37,7 @@ class Tabs extends WidgetSelectorBase {
       );
     }
 
-    $element['#attached'] = [
-      'library' => [
-        'entity_browser/tabs',
-      ],
-      'drupalSettings' => [
-        'entityBrowserTabs' => [
-          'tabsClass' => ['tabs', 'secondary'],
-        ],
-      ],
-    ];
+    $element['#attached']['library'][] = 'entity_browser/tabs';
 
     return $element;
   }

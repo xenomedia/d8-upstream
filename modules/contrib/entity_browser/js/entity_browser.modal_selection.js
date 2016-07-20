@@ -3,6 +3,7 @@
  *
  * Propagates selected entities from modal display.
  */
+
 (function (drupalSettings) {
 
   'use strict';
@@ -16,6 +17,6 @@
 
   // This is a silly solution, but works fo now. We should close the modal
   // via ajax commands.
-  parent.jQuery(parent.document).find('.ui-dialog-titlebar-close').click();
+  parent.jQuery(parent.document).find('.entity-browser-modal-iframe').parents('.ui-dialog').eq(0).find('.ui-dialog-titlebar-close').click();
 
 }(drupalSettings));
