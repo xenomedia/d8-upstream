@@ -1,13 +1,9 @@
 <?php
 
-/**
- * @file
- * Contains Drupal\views_infinite_scroll\Plugin\views\pager\InfiniteScroll.
- */
 
 namespace Drupal\views_infinite_scroll\Plugin\views\pager;
 
-use Drupal\views\Plugin\views\pager\SqlBase;
+use Drupal\views\Plugin\views\pager\Mini;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
@@ -21,7 +17,7 @@ use Drupal\Core\Form\FormStateInterface;
  *  theme = "views_infinite_scroll_pager"
  * )
  */
-class InfiniteScroll extends SqlBase {
+class InfiniteScroll extends Mini {
 
   /**
    * {@inheritdoc}
@@ -45,7 +41,7 @@ class InfiniteScroll extends SqlBase {
   /**
    * {@inheritdoc}
    */
-  protected function defineOptions() {
+  public function defineOptions() {
     $options = parent::defineOptions();
     $options['views_infinite_scroll'] = [
       'contains' => [

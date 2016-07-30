@@ -6,6 +6,7 @@
  */
 
 use Drupal\Core\Url;
+use Drupal\Core\Template\Attribute;
 use Drupal\views_infinite_scroll\Plugin\views\pager\InfiniteScroll;
 
 /**
@@ -24,6 +25,11 @@ function views_infinite_scroll_preprocess_views_infinite_scroll_pager(&$vars) {
     $vars['items']['next']['href'] = Url::fromRoute('<current>', [], $options);
   }
   $vars['#cache']['contexts'][] = 'url.query_args';
+  $vars['attributes'] = new Attribute([
+    'class' => ['js-pager__items', 'pager'],
+    'data-drupal-views-infinite-scroll-pager' => $vars['options']['automatically_load_content'] ? 'automatic' : TRUE,
+  ]);
+
 }
 
 /**
@@ -35,7 +41,13 @@ function views_infinite_scroll_preprocess_views_view(&$vars) {
     $pager = $view->getPager();
     if ($pager && $pager instanceof InfiniteScroll) {
       $vars['rows']['#theme_wrappers'] = ['container'];
-      $vars['rows']['#attributes'] = ['class' => ['views-infinite-scroll-content-wrapper']];
+      $vars['rows']['#attributes'] = [
+        'data-drupal-views-infinite-scroll-content-wrapper' => TRUE,
+        'class' => [
+          'views-infinite-scroll-content-wrapper',
+          'clearfix',
+        ],
+      ];
     }
   }
 }

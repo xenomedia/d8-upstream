@@ -6,7 +6,7 @@
 #}
 
 {% if items.next %}
-<ul class="js-pager__items pager{% if options.automatically_load_content %} infinite-scroll-automatic-pager{% endif %}">
+<ul{{ attributes }}>
   <li class="pager__item">
     <a class="button" href="{{ items.next.href }}" title="{{ 'Go to next page'|t }}" rel="next">{{ options.button_text }}</a>
   </li>

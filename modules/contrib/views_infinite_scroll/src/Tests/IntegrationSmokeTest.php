@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains Drupal\views_infinite_scroll\Tests\IntegrationSmokeTest.
- */
-
 namespace Drupal\views_infinite_scroll\Tests;
 
 use Drupal\simpletest\WebTestBase;
@@ -43,7 +38,7 @@ class IntegrationSmokeTest extends WebTestBase {
       'page[title]' => 'Test Plugin',
       'page[path]' => 'test-plugin',
     ], 'Save and edit');
-    $this->clickLink('Full');
+    $this->clickLink('Mini');
     $this->drupalPostForm(NULL, [
       'pager[type]' => 'infinite_scroll',
     ], 'Apply');
@@ -64,7 +59,7 @@ class IntegrationSmokeTest extends WebTestBase {
 
     // Ensure the wrapper div appears on the page.
     $this->drupalGet('test-plugin');
-    $this->assertRaw('views-infinite-scroll-content-wrapper');
+    $this->assertRaw('data-drupal-views-infinite-scroll-content-wrapper');
   }
 
 }

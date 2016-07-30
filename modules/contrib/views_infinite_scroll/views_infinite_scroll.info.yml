@@ -7,8 +7,8 @@ package: Views
 dependencies:
  - views
 
-# Information added by Drupal.org packaging script on 2016-03-22
-version: '8.x-1.0'
+# Information added by Drupal.org packaging script on 2016-07-25
+version: '8.x-1.2'
 core: '8.x'
 project: 'views_infinite_scroll'
-datestamp: 1458637143
+datestamp: 1469415251
