@@ -8,6 +8,7 @@
     "require-dev": {
         "drush/drush": "^9.0",
         "drupal/drupal-extension": "^3.2",
+        "drupal-composer/drupal-scaffold": "^2.0.0",
         "jakoch/phantomjs-installer": "1.9.8",
         "behat/behat": "^3.0",
         "drupal/coder": "8.*",
@@ -52,30 +53,6 @@
             ]
         },
         "patches": {
-            "drupal/core": {
-                "Plugin Lazy loading can cause usort warning":
-                "https://www.drupal.org/files/issues/Iterating-through-array--2699157.patch"
-            },
-            "drupal/ctools": {
-                "2747739 - Mega patch":
-                "https://www.drupal.org/files/issues/ctools--8.x-3.0-alpha26--1fe3649.patch"
-            },
-            "drupal/entity_browser": {
-                "2738843 - The view widget should support radio buttons":
-                "https://www.drupal.org/files/issues/2738843-7.patch"
-            },
-            "drupal/media_entity_twitter": {
-                "2764411 - Tweets embedded in CKEditor do not load when selected from Entity Browser":
-                "https://www.drupal.org/files/issues/2764411_4.patch"
-            },
-            "drupal/metatag": {
-                "2765137 - hook_install() + drupal_set_message() = message displayed several times when using a distro.":
-                "https://www.drupal.org/files/issues/2765137-2.patch"
-            },
-            "drupal/page_manager": {
-                "2747739 - Mega Patch":
-                "https://www.drupal.org/files/issues/page_manager--alpha23-09e79ff--2747739-3.patch"
-            },
             "drupal/panelizer": {
                 "2747739 - Mega Patch":
                 "https://www.drupal.org/files/issues/panelizer--alpha2-1ddfa61--2747739-5.patch",
@@ -84,7 +61,7 @@
                 "2700597 - Explicitly set the Panels IPE URL root when saving in Panelizer":
                 "https://www.drupal.org/files/issues/panelizer-ipe-url-root-handling.patch",
                 "2664682 - Implement admin UI for editing Panelizer defaults":
-                "https://www.drupal.org/files/issues/2664682-49.patch"
+                "https://www.drupal.org/files/issues/2664682-55.patch"
             },
             "drupal/panels": {
                 "2747739 - Mega Patch":
@@ -99,10 +76,6 @@
             "drupal/scheduled_updates": {
                 "2674874 - Issue saving Schedule Update Type form":
                 "https://www.drupal.org/files/issues/schedule_updates-save_type-2674874-2.patch"
-            },
-            "drupal/views_infinite_scroll": {
-                "2701881 - View \"No results\" area doesn't appear even view has no results":
-                "https://www.drupal.org/files/issues/no-wrapper-empty-rows-2701881-2.patch"
             },
             "drupal/workbench_moderation": {
                 "2668006 - Provide logical access control for when IPE should be applied to moderated nodes":
@@ -121,14 +94,14 @@
         "composer/installers": "^1.0",
         "drupal/core": "^8.1.0",
         "drupal/embed": "^8.1.0",
-        "drupal/entity_embed": "^8.1.0",
+        "drupal/entity_embed": "8.1.0-alpha3",
         "drupal/media_entity": "^8.1.0",
         "drupal/media_entity_instagram": "^8.1.0",
-        "drupal/media_entity_twitter": "8.1.1",
+        "drupal/media_entity_twitter": "^8.1.2",
         "drupal/media_entity_image": "^8.1.0",
-        "drupal/ctools": "8.3.0-alpha26",
+        "drupal/ctools": "8.3.0-alpha27",
         "drupal/panels": "8.3.0-beta4",
-        "drupal/page_manager": "8.1.0-alpha23",
+        "drupal/page_manager": "8.1.0-alpha24",
         "drupal/panelizer": "8.3.0-alpha2",
         "drupal/scheduled_updates": "8.1.0-alpha5",
         "drupal/workbench_moderation": "8.1.1",
@@ -138,10 +111,9 @@
         "drupal/inline_entity_form": "^8.1.0",
         "drupal/metatag": "^8.1.0",
         "drupal/token": "^8.1.0",
-        "drupal-composer/drupal-scaffold": "^2.0.0",
         "drupal/pathauto": "^8.1.0",
-        "drupal/entity_browser": "8.1.0-alpha6",
-        "drupal/views_infinite_scroll": "8.1.0",
+        "drupal/entity_browser": "8.1.0-alpha8",
+        "drupal/views_infinite_scroll": "^8.1.1",
         "drupal/media_entity_document": "^8.1.0",
         "drupal/video_embed_field": "^8.1.0"
     }

@@ -7,6 +7,7 @@
 
 namespace Drupal\page_manager\Plugin\DisplayVariant;
 
+use Drupal\Component\Render\HtmlEscapedText;
 use Drupal\Component\Uuid\UuidInterface;
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Block\BlockManager;
@@ -18,6 +19,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\Context\ContextHandlerInterface;
 use Drupal\Core\Plugin\ContextAwarePluginInterface;
 use Drupal\Core\Render\Element;
+use Drupal\Core\Render\Markup;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Utility\Token;
 use Drupal\ctools\Plugin\DisplayVariant\BlockDisplayVariant;
@@ -279,7 +281,13 @@ class PageBlockDisplayVariant extends BlockDisplayVariant implements PluginWizar
    */
   protected function renderPageTitle($page_title) {
     $data = $this->getContextAsTokenData();
-    return $this->token->replace($page_title, $data);
+    // Token replace only escapes replacement values, ensure a consistent
+    // behavior by also escaping the input and then returning it as a Markup
+    // object to avoid double escaping.
+    // @todo: Simplify this when core provides an API for this in
+    //   https://www.drupal.org/node/2580723.
+    $title = (string) $this->token->replace(new HtmlEscapedText($page_title), $data);
+    return Markup::create($title);
   }
 
   /**

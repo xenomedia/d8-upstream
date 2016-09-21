@@ -10,6 +10,7 @@ use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Site\Settings;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
  * Base implementation for display plugins.
@@ -71,8 +72,10 @@ abstract class DisplayBase extends PluginBase implements DisplayInterface, Conta
    *   The plugin implementation definition.
    * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $event_dispatcher
    *   Event dispatcher service.
-   * @param \Drupal\Component\Uuid\UuidInterface
+   * @param \Drupal\Component\Uuid\UuidInterface $uuid_generator
    *   UUID generator interface.
+   * @param \Drupal\Core\KeyValueStore\KeyValueStoreExpirableInterface $selection_storage
+   *   The selection storage.
    */
   public function __construct(array $configuration, $plugin_id, $plugin_definition, EventDispatcherInterface $event_dispatcher, UuidInterface $uuid_generator, KeyValueStoreExpirableInterface $selection_storage) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
@@ -154,12 +157,22 @@ abstract class DisplayBase extends PluginBase implements DisplayInterface, Conta
   /**
    * {@inheritdoc}
    */
-  public function displayEntityBrowser(FormStateInterface $form_state, array $entities = []) {
-    // If the existing selection was passed in save it to expirable state for
-    // the entity browser to be able to load them from there.
-    if (!empty($entities)) {
-      $this->selectionStorage->setWithExpire($this->getUuid(), $entities, Settings::get('entity_browser_expire', 21600));
-    }
+  public function displayEntityBrowser(array $element, FormStateInterface $form_state, array &$complete_form, array $persistent_data = []) {
+    // Store persistent data so that after being rendered widgets can still
+    // have access to contextual information.
+    $this->selectionStorage->setWithExpire(
+      $this->getUuid(),
+      $persistent_data,
+      Settings::get('entity_browser_expire', 21600)
+    );
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function selectionCompleted(array $entities) {
+    $this->entities = $entities;
+    $this->eventDispatcher->addListener(KernelEvents::RESPONSE, [$this, 'propagateSelection']);
   }
 
 }

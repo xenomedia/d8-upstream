@@ -10,7 +10,6 @@
         "drupal/drupal-extension": "^3.1",
         "jakoch/phantomjs-installer": "1.9.8",
         "behat/behat": "^3.0",
-        "drupal/coder": "8.*",
         "phing/phing": "^2.14"
     },
     "config": {
@@ -24,14 +23,17 @@
     ],
     "require": {
         "composer/installers": "^1.0",
-        "drupal/lightning": "8.1.02",
+        "drupal/lightning": "8.1.04",
         "drupal/admin_toolbar": "8.*",
         "drupal/devel": "8.*",
         "drupal/stage_file_proxy": "8.*",
         "drupal/field_formatter": "8.*",
         "drupal/field_group": "8.*",
         "drupal/google_analytics": "8.2.*",
-        "drupal/paragraphs": "8.*"
+        "drupal/paragraphs": "8.*",
+        "solarium/solarium": "^3.6",
+        "drupal/reroute_email": "8.*",
+        "drupal/coder": "8.*"
     },
     "extra": {
         "installer-paths": {

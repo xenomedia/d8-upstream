@@ -2,7 +2,6 @@
 
 namespace Drupal\entity_browser\Plugin\views\field;
 
-use Drupal\Core\Form\FormStateInterface;
 use Drupal\views\Plugin\views\field\FieldPluginBase;
 use Drupal\views\Plugin\views\style\Table;
 use Drupal\views\ResultRow;
@@ -25,7 +24,7 @@ class SelectForm extends FieldPluginBase {
    *   The row ID, in the form ENTITY_TYPE:ENTITY_ID.
    */
   public function getRowId(ResultRow $row) {
-    $entity = $row->_entity;
+    $entity = $this->getEntity($row);
     return $entity->getEntityTypeId() . ':' . $entity->id();
   }
 
@@ -67,18 +66,12 @@ class SelectForm extends FieldPluginBase {
       foreach ($this->view->result as $row) {
         $value = $this->getRowId($row);
 
-        $element_name = 'entity_browser_select';
-        if ($this->options['selection_type'] == 'checkbox') {
-          $element_name .= '[' . $value . ']';
-        }
-
         $render[$this->options['id']][$value] = [
-          '#type' => $this->options['selection_type'],
+          '#type' => 'checkbox',
           '#title' => $this->t('Select this item'),
           '#title_display' => 'invisible',
           '#return_value' => $value,
-          '#attributes' => ['name' => $element_name],
-          '#parents' => explode('[', rtrim($element_name, ']')),
+          '#attributes' => ['name' => "entity_browser_select[$value]"],
           '#default_value' => NULL,
         ];
       }
@@ -95,34 +88,6 @@ class SelectForm extends FieldPluginBase {
    */
   public function clickSortable() {
     return FALSE;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function defineOptions() {
-    $options = parent::defineOptions();
-    $options['selection_type']['default'] = 'checkbox';
-
-    return $options;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function buildOptionsForm(&$form, FormStateInterface $form_state) {
-    parent::buildOptionsForm($form, $form_state);
-
-    $form['selection_type'] = [
-      '#type' => 'radios',
-      '#title' => $this->t('Element type'),
-      '#options' => [
-        'checkbox' => $this->t('Checkboxes'),
-        'radio' => $this->t('Radio buttons'),
-      ],
-      '#description' => $this->t('If using radio buttons, you will only be able to select one entity.'),
-      '#default_value' => $this->options['selection_type'],
-    ];
   }
 
 }

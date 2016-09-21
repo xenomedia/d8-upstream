@@ -42,12 +42,12 @@ class MultistepDisplayTest extends WebTestBase {
       'display' => 'iframe',
       'widget_selector' => 'tabs',
       'selection_display' => 'multi_step_display',
-      'submit_text' => 'Select',
     ];
     $this->drupalPostForm(NULL, $edit, 'Next');
     $this->drupalPostForm(NULL, [], 'Next');
     $this->drupalPostForm(NULL, [], 'Next');
 
+    $this->assertText('Selection display', 'Trail is shown.');
     $this->assertText('Select button text', 'Title is correct.');
     $this->assertText('Text to display on the entity browser select button.', 'Description is correct.');
     $this->assertRaw('Use selected', 'Default text is correct.');
@@ -70,7 +70,7 @@ class MultistepDisplayTest extends WebTestBase {
     $edit = [
       'files[upload][]' => $this->container->get('file_system')->realpath($image->uri),
     ];
-    $this->drupalPostForm(NULL, $edit, 'Select');
+    $this->drupalPostForm(NULL, $edit, 'Select files');
     $this->assertRaw('Use blah selected', 'Select button is displayed if something is selected.');
   }
 

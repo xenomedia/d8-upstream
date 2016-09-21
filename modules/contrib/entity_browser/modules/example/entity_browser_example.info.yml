@@ -10,8 +10,8 @@ dependencies:
   - file
   - node
 
-# Information added by Drupal.org packaging script on 2016-07-12
-version: '8.x-1.0-alpha6'
+# Information added by Drupal.org packaging script on 2016-09-01
+version: '8.x-1.0-alpha8'
 core: '8.x'
 project: 'entity_browser'
-datestamp: 1468359241
+datestamp: 1472759641

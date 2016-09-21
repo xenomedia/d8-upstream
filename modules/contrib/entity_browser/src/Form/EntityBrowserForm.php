@@ -88,11 +88,14 @@ class EntityBrowserForm extends FormBase implements EntityBrowserFormInterface {
       $form_state->set(['entity_browser', 'instance_uuid'], $this->uuidGenerator->generate());
     }
     $form_state->set(['entity_browser', 'selected_entities'], []);
+    $form_state->set(['entity_browser', 'validators'], []);
     $form_state->set(['entity_browser', 'selection_completed'], FALSE);
 
-    // Initialize select from the query parameter.
-    if ($selection = $this->selectionStorage->get($form_state->get(['entity_browser', 'instance_uuid']))) {
-      $form_state->set(['entity_browser', 'selected_entities'], $selection);
+    // Initialize form state with persistent data, if present.
+    if ($storage = $this->selectionStorage->get($form_state->get(['entity_browser', 'instance_uuid']))) {
+      foreach ($storage as $key => $value) {
+        $form_state->set(['entity_browser', $key], $value);
+      }
     }
   }
 
@@ -122,18 +125,6 @@ class EntityBrowserForm extends FormBase implements EntityBrowserFormInterface {
       ->getWidgets()
       ->get($this->getCurrentWidget($form_state))
       ->getForm($form, $form_state, $this->entity_browser->getAdditionalWidgetParameters());
-
-    $form['actions'] = [
-      '#type' => 'actions',
-      'submit' => [
-        '#type' => 'submit',
-        '#button_type' => 'primary',
-        '#value' => $this->entity_browser->getSubmitButtonText(),
-        '#attributes' => [
-          'class' => ['is-entity-browser-submit'],
-        ],
-      ],
-    ];
 
     $form[$form['#browser_parts']['selection_display']] = $this->entity_browser
       ->getSelectionDisplay()

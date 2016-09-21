@@ -10,7 +10,7 @@ return array(
     'WebDriver' => array($vendorDir . '/instaclick/php-webdriver/lib'),
     'Twig_' => array($vendorDir . '/twig/twig/lib'),
     'Stack' => array($vendorDir . '/stack/builder/src'),
-    'Psr\\Log\\' => array($vendorDir . '/psr/log'),
+    'Solarium\\' => array($vendorDir . '/solarium/solarium/library'),
     'Prophecy\\' => array($vendorDir . '/phpspec/prophecy/src'),
     'Instagram' => array($vendorDir . '/php-instagram-api/php-instagram-api'),
     'Egulias\\' => array($vendorDir . '/egulias/email-validator/src'),

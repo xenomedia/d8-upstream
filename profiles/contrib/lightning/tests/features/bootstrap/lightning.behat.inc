@@ -61,7 +61,6 @@ class LightningSubContext extends DrupalSubContextBase implements DrupalSubConte
    */
   public function clickElementBySelector($selector) {
     $session = $this->getSession();
-
     $element = $session->getPage()->find('css', $selector);
     if ($element) {
       try {
@@ -368,6 +367,44 @@ class LightningSubContext extends DrupalSubContextBase implements DrupalSubConte
     if (!$element->hasAttribute('disabled')) {
       throw new ExpectationException("Expected '{$field}' field to be disabled.", $this->getSession()->getDriver());
     }
+  }
+
+  /**
+   * Asserts that a select list does not have a specific option.
+   *
+   * @param string $field
+   *   The select list to check.
+   * @param string $option
+   *   The option to look for.
+   *
+   * @Then :field should not have a(n) :option option
+   */
+  public function assertOptionNotExists($field, $option) {
+    $assert = $this->assertSession();
+    $field = $assert->fieldExists($field);
+    $assert->elementNotExists('named', ['option', $option], $field);
+  }
+
+  /**
+   * Submits the image browser.
+   *
+   * @When I submit the entity browser
+   */
+  public function submitEntityBrowser() {
+    $this->getSession()
+      ->executeScript('window.frames["entity_browser_iframe_image_browser"].document.forms[0].op.click()');
+  }
+
+  /**
+   * Switches to an iframe.
+   *
+   * @param string $name
+   *   The iframe name.
+   *
+   * @When I switch to the :name frame
+   */
+  public function switchToFrame($name) {
+    $this->getSession()->switchToIFrame($name);
   }
 
 }

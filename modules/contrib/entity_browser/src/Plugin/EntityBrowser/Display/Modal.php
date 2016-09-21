@@ -20,7 +20,6 @@ use Drupal\Core\Path\CurrentPathStack;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\entity_browser\Ajax\SelectEntitiesCommand;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-use Symfony\Component\HttpKernel\KernelEvents;
 use Drupal\Core\Form\FormStateInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -70,16 +69,16 @@ class Modal extends DisplayBase implements DisplayRouterInterface {
    *   The plugin implementation definition.
    * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $event_dispatcher
    *   Event dispatcher service.
-   * @param \Drupal\Component\Uuid\UuidInterface
+   * @param \Drupal\Component\Uuid\UuidInterface $uuid
    *   UUID generator interface.
-   * @parem \Drupal\Core\KeyValueStore\KeyValueStoreExpirableInterface $selection_storage
+   * @param \Drupal\Core\KeyValueStore\KeyValueStoreExpirableInterface $selection_storage
    *   The selection storage.
    * @param \Drupal\Core\Routing\RouteMatchInterface $current_route_match
    *   The currently active route match object.
-   * @param \Symfony\Component\HttpFoundation\Request $request
-   *   Current request.
    * @param \Drupal\Core\Path\CurrentPathStack $current_path
    *   The current path.
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   Current request.
    */
   public function __construct(array $configuration, $plugin_id, $plugin_definition, EventDispatcherInterface $event_dispatcher, UuidInterface $uuid, KeyValueStoreExpirableInterface $selection_storage, RouteMatchInterface $current_route_match, CurrentPathStack $current_path, Request $request) {
     parent::__construct($configuration, $plugin_id, $plugin_definition, $event_dispatcher, $uuid, $selection_storage);
@@ -112,15 +111,15 @@ class Modal extends DisplayBase implements DisplayRouterInterface {
     return [
       'width' => '650',
       'height' => '500',
-      'link_text' => t('Select entities'),
+      'link_text' => $this->t('Select entities'),
     ] + parent::defaultConfiguration();
   }
 
   /**
    * {@inheritdoc}
    */
-  public function displayEntityBrowser(FormStateInterface $form_state, array $entities = []) {
-    parent::displayEntityBrowser($form_state, $entities);
+  public function displayEntityBrowser(array $element, FormStateInterface $form_state, array &$complete_form, array $persistent_data = []) {
+    parent::displayEntityBrowser($element, $form_state, $complete_form, $persistent_data);
     $js_event_object = new RegisterJSCallbacks($this->configuration['entity_browser_id'], $this->getUuid());
     $js_event_object->registerCallback('Drupal.entityBrowser.selectionCompleted');
     $js_event = $this->eventDispatcher->dispatch(Events::REGISTER_JS_CALLBACKS, $js_event_object);
@@ -151,11 +150,12 @@ class Modal extends DisplayBase implements DisplayRouterInterface {
         '#value' => $this->configuration['link_text'],
         '#limit_validation_errors' => [],
         '#submit' => [],
-        '#name' => Html::getId('op_' . $this->configuration['entity_browser_id'] . '_' . $this->getUuid()),
+        '#name' => implode('_', $element['#eb_parents']),
         '#ajax' => [
           'callback' => [$this, 'openModal'],
           'event' => 'click',
         ],
+        '#executes_submit_callback' => FALSE,
         '#attributes' => $data['attributes'],
         '#attached' => [
           'library' => ['core/drupal.dialog.ajax', 'entity_browser/modal'],
@@ -196,6 +196,7 @@ class Modal extends DisplayBase implements DisplayRouterInterface {
 
     $field_name = $triggering_element['#parents'][0];
     $element_name = $this->configuration['entity_browser_id'];
+    $name = 'entity_browser_iframe_' . $element_name;
     $content = [
       '#type' => 'html_tag',
       '#tag' => 'iframe',
@@ -206,7 +207,8 @@ class Modal extends DisplayBase implements DisplayRouterInterface {
         'height' => $this->configuration['height'] - 90,
         'frameborder' => 0,
         'style' => 'padding:0',
-        'name' => 'entity_browser_iframe_' . Html::cleanCssIdentifier($element_name),
+        'name' => $name,
+        'id' => $name,
       ],
     ];
     $html = drupal_render($content);
@@ -223,14 +225,6 @@ class Modal extends DisplayBase implements DisplayRouterInterface {
       'resizable' => 0,
     ]));
     return $response;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function selectionCompleted(array $entities) {
-    $this->entities = $entities;
-    $this->eventDispatcher->addListener(KernelEvents::RESPONSE, [$this, 'propagateSelection']);
   }
 
   /**
@@ -340,7 +334,7 @@ class Modal extends DisplayBase implements DisplayRouterInterface {
   }
 
   /**
-   * @inheritDoc
+   * {@inheritdoc}
    */
   public function __sleep() {
     return ['configuration'];
@@ -355,13 +349,13 @@ class Modal extends DisplayBase implements DisplayRouterInterface {
       '#type' => 'number',
       '#title' => $this->t('Width of the modal'),
       '#default_value' => $configuration['width'],
-      '#description' => t('Empty value for responsive width.'),
+      '#description' => $this->t('Empty value for responsive width.'),
     ];
     $form['height'] = [
       '#type' => 'number',
       '#title' => $this->t('Height of the modal'),
       '#default_value' => $configuration['height'],
-      '#description' => t('Empty value for responsive height.'),
+      '#description' => $this->t('Empty value for responsive height.'),
     ];
     $form['link_text'] = [
       '#type' => 'textfield',

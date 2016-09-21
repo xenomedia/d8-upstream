@@ -143,7 +143,7 @@ class ToolbarController extends ControllerBase {
 
   public function runCron() {
     $this->cron->run();
-    drupal_set_message($this->t('CRON ran successfully.'));
+    drupal_set_message($this->t('Cron ran successfully.'));
     return new RedirectResponse($this->reload_page());
   }
 

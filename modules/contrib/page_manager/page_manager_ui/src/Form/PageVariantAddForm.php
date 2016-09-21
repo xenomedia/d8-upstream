@@ -67,6 +67,9 @@ class PageVariantAddForm extends FormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state, $machine_name = '') {
     $cached_values = $form_state->getTemporaryValue('wizard');
+    // The name label for variants is not required and can be changed later.
+    $form['name']['label']['#required'] = FALSE;
+    $form['name']['label']['#disabled'] = FALSE;
 
     $variant_plugin_options = [];
     foreach ($this->variantManager->getDefinitions() as $plugin_id => $definition) {
@@ -114,6 +117,25 @@ class PageVariantAddForm extends FormBase {
   protected function variantExists(PageInterface $page, $variant_id) {
     return isset($page->getVariants()[$variant_id]) || PageVariant::load($variant_id);
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function validateForm(array &$form, FormStateInterface $form_state) {
+    // If the label is not present or is an empty string.
+    if (!$form_state->hasValue('label') || !$form_state->getValue('label')) {
+      $cached_values = $form_state->getTemporaryValue('wizard');
+      /** @var $page_variant \Drupal\page_manager\Entity\PageVariant */
+      $page_variant = $cached_values['page_variant'];
+      $plugin = $page_variant->getVariantPlugin();
+      /** @var \Drupal\Core\StringTranslation\TranslatableMarkup $admin_label */
+      $admin_label = $plugin->getPluginDefinition()['admin_label'];
+      $form_state->setValue('label', (string) $admin_label);
+    }
+    // Currently the parent does nothing, but that could change.
+    parent::validateForm($form, $form_state);
+  }
+
 
   /**
    * {@inheritdoc}

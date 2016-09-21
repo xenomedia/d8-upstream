@@ -1,0 +1,17 @@
+reroute_email.settings:
+  type: config_object
+  label: 'Reroute Email Settings'
+  mapping:
+    reroute_email_enable:
+      type: boolean
+      label: 'Enable reroute_email'
+    reroute_email_address:
+      type: string
+      label: 'Rerouting email addresses'
+    reroute_email_enable_message:
+      type: boolean
+      label: 'Add message to body of email'
+    reroute_email_enable_dsm:
+      type: boolean
+      label: 'Enable dsm() function for debugging'
+

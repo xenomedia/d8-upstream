@@ -47,8 +47,8 @@ themes:
   - bartik
   - seven
 
-# Information added by Drupal.org packaging script on 2016-07-18
-version: '8.x-1.02'
+# Information added by Drupal.org packaging script on 2016-09-07
+version: '8.x-1.04'
 core: '8.x'
 project: 'lightning'
-datestamp: 1468864294
+datestamp: 1473278779

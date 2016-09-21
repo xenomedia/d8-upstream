@@ -18,7 +18,6 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Drupal\Core\Path\CurrentPathStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -65,9 +64,9 @@ class IFrame extends DisplayBase implements DisplayRouterInterface {
    *   The plugin implementation definition.
    * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $event_dispatcher
    *   Event dispatcher service.
-   * @param \Drupal\Component\Uuid\UuidInterface
+   * @param \Drupal\Component\Uuid\UuidInterface $uuid
    *   UUID generator interface.
-   * @parem \Drupal\Core\KeyValueStore\KeyValueStoreExpirableInterface $selection_storage
+   * @param \Drupal\Core\KeyValueStore\KeyValueStoreExpirableInterface $selection_storage
    *   The selection storage.
    * @param \Drupal\Core\Routing\RouteMatchInterface $current_route_match
    *   The currently active route match object.
@@ -107,7 +106,7 @@ class IFrame extends DisplayBase implements DisplayRouterInterface {
     return [
       'width' => '650',
       'height' => '500',
-      'link_text' => t('Select entities'),
+      'link_text' => $this->t('Select entities'),
       'auto_open' => FALSE,
     ] + parent::defaultConfiguration();
   }
@@ -115,8 +114,8 @@ class IFrame extends DisplayBase implements DisplayRouterInterface {
   /**
    * {@inheritdoc}
    */
-  public function displayEntityBrowser(FormStateInterface $form_state, array $entities = []) {
-    parent::displayEntityBrowser($form_state, $entities);
+  public function displayEntityBrowser(array $element, FormStateInterface $form_state, array &$complete_form, array $persistent_data = []) {
+    parent::displayEntityBrowser($element, $form_state, $complete_form, $persistent_data);
     /** @var \Drupal\entity_browser\Events\RegisterJSCallbacks $event */
     $js_event_object = new RegisterJSCallbacks($this->configuration['entity_browser_id'], $this->getUuid());
     $js_event_object->registerCallback('Drupal.entityBrowser.selectionCompleted');
@@ -170,16 +169,10 @@ class IFrame extends DisplayBase implements DisplayRouterInterface {
   }
 
   /**
-   * {@inheritdoc}
-   */
-  public function selectionCompleted(array $entities) {
-    $this->entities = $entities;
-    $this->eventDispatcher->addListener(KernelEvents::RESPONSE, [$this, 'propagateSelection']);
-  }
-
-  /**
-   * KernelEvents::RESPONSE listener. Intercepts default response and injects
-   * response that will trigger JS to propagate selected entities upstream.
+   * KernelEvents::RESPONSE listener.
+   *
+   * Intercepts default response and injects response that will trigger JS to
+   * propagate selected entities upstream.
    *
    * @param FilterResponseEvent $event
    *   Response event.
@@ -222,10 +215,10 @@ class IFrame extends DisplayBase implements DisplayRouterInterface {
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
     $configuration = $this->getConfiguration();
     $form['width'] = [
-      '#type' => 'number',
+      '#type' => 'textfield',
       '#title' => $this->t('Width of the iFrame'),
-      '#min' => 1,
       '#default_value' => $configuration['width'],
+      '#description' => $this->t('Positive integer for absolute size or a relative size in percentages.'),
     ];
 
     $form['height'] = [
@@ -254,11 +247,14 @@ class IFrame extends DisplayBase implements DisplayRouterInterface {
    * {@inheritdoc}
    */
   public function validateConfigurationForm(array &$form, FormStateInterface $form_state) {
-    if ($form_state->getValue('width') <= 0) {
-      $form_state->setError($form['width'], $this->t('Width must be greather than 0.'));
+    // We want all positive integers, or percentages between 1% and 100%.
+    $pattern = '/^([1-9][0-9]*|([2-9][0-9]{0,1}%)|(1[0-9]{0,2}%))$/';
+    if (preg_match($pattern, $form_state->getValue('width')) == 0) {
+      $form_state->setError($form['width'], $this->t('Width must be a number greater than 0, or a percentage between 1% and 100%.'));
     }
+
     if ($form_state->getValue('height') <= 0) {
-      $form_state->setError($form['height'], $this->t('Height must be greather than 0.'));
+      $form_state->setError($form['height'], $this->t('Height must be greater than 0.'));
     }
   }
 
