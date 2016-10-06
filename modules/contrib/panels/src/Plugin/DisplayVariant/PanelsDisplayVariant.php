@@ -1,12 +1,8 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\panels\Plugin\DisplayVariant\PanelsDisplayVariant.
- */
-
 namespace Drupal\panels\Plugin\DisplayVariant;
 
+use Drupal\Component\Render\HtmlEscapedText;
 use Drupal\Component\Uuid\UuidInterface;
 use Drupal\Core\Block\BlockManager;
 use Drupal\Core\Condition\ConditionManager;
@@ -14,17 +10,16 @@ use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\Context\ContextHandlerInterface;
 use Drupal\Core\Plugin\PluginFormInterface;
+use Drupal\Core\Render\Markup;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Utility\Token;
 use Drupal\ctools\Plugin\DisplayVariant\BlockDisplayVariant;
 use Drupal\ctools\Plugin\PluginWizardInterface;
 use Drupal\layout_plugin\Plugin\Layout\LayoutInterface;
-use Drupal\layout_plugin\Plugin\Layout\LayoutPluginManager;
 use Drupal\layout_plugin\Plugin\Layout\LayoutPluginManagerInterface;
 use Drupal\panels\Form\LayoutChangeRegions;
 use Drupal\panels\Form\LayoutChangeSettings;
 use Drupal\panels\Form\LayoutPluginSelector;
-use Drupal\panels\Form\LayoutPluginUpdate;
 use Drupal\panels\Plugin\DisplayBuilder\DisplayBuilderInterface;
 use Drupal\panels\Plugin\DisplayBuilder\DisplayBuilderManagerInterface;
 use Drupal\panels\Plugin\PanelsPattern\PanelsPatternInterface;
@@ -487,7 +482,13 @@ class PanelsDisplayVariant extends BlockDisplayVariant implements PluginWizardIn
    */
   protected function renderPageTitle($page_title) {
     $data = $this->getContextAsTokenData();
-    return $this->token->replace($page_title, $data);
+    // Token replace only escapes replacement values, ensure a consistent
+    // behavior by also escaping the input and then returning it as a Markup
+    // object to avoid double escaping.
+    // @todo: Simplify this when core provides an API for this in
+    //   https://www.drupal.org/node/2580723.
+    $title = (string) $this->token->replace(new HtmlEscapedText($page_title), $data);
+    return Markup::create($title);
   }
 
   /**
@@ -510,15 +511,6 @@ class PanelsDisplayVariant extends BlockDisplayVariant implements PluginWizardIn
       }
     }
     return $data;
-  }
-
-  public function id() {
-    // Explicit IPE/Panelizer Support.
-    if (!empty($this->getContexts()['@panelizer.entity_context:entity']) && $this->getContexts()['@panelizer.entity_context:entity']->hasContextValue()) {
-      return $this->getContexts()['@panelizer.entity_context:entity']->getContextValue()->uuid();
-    }
-    // If the panelizer context isn't available, just return our uuid.
-    return parent::id();
   }
 
 }

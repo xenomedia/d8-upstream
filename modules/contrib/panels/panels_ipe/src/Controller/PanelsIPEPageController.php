@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\panels_ipe\Controller\PanelsIPEPageController.
- */
-
 namespace Drupal\panels_ipe\Controller;
 
 use Drupal\Core\Ajax\AjaxResponse;
@@ -19,6 +14,7 @@ use Drupal\panels\Storage\PanelsStorageManagerInterface;
 use Drupal\panels_ipe\Helpers\RemoveBlockRequestHandler;
 use Drupal\panels_ipe\Helpers\UpdateLayoutRequestHandler;
 use Drupal\panels_ipe\PanelsIPEBlockRendererTrait;
+use Drupal\panels_ipe\TempStoreTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -33,6 +29,7 @@ use Drupal\user\SharedTempStoreFactory;
 class PanelsIPEPageController extends ControllerBase {
 
   use PanelsIPEBlockRendererTrait;
+  use TempStoreTrait;
 
   /**
    * @var \Drupal\Core\Block\BlockManagerInterface
@@ -122,7 +119,8 @@ class PanelsIPEPageController extends ControllerBase {
     $panels_display = $this->panelsStorage->load($panels_storage_type, $panels_storage_id);
 
     // If a temporary configuration for this variant exists, use it.
-    if ($variant_config = $this->tempStore->get($panels_display->id())) {
+    $key = $this->getTempStoreId($panels_display);
+    if ($variant_config = $this->tempStore->get($key)) {
       $panels_display->setConfiguration($variant_config);
     }
 
@@ -145,7 +143,7 @@ class PanelsIPEPageController extends ControllerBase {
     $panels_display = $this->loadPanelsDisplay($panels_storage_type, $panels_storage_id);
 
     // If a temporary configuration for this variant exists, use it.
-    $temp_store_key = $panels_display->id();
+    $temp_store_key = $this->getTempStoreId($panels_display);
     if ($variant_config = $this->tempStore->get($temp_store_key)) {
       $this->tempStore->delete($temp_store_key);
     }

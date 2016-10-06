@@ -10,8 +10,8 @@ dependencies:
 test_dependencies:
   - entity_browser
 
-# Information added by Drupal.org packaging script on 2016-08-02
-version: '8.x-1.0-alpha3'
+# Information added by Drupal.org packaging script on 2016-09-08
+version: '8.x-1.0-beta1'
 core: '8.x'
 project: 'entity_embed'
-datestamp: 1470170059
+datestamp: 1473360541

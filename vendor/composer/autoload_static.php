@@ -441,6 +441,13 @@ class ComposerStaticInit3d871d74f1a4f0a6943e64c4003a5a3e
                 0 => __DIR__ . '/..' . '/behat/behat/src',
             ),
         ),
+        'A' => 
+        array (
+            'Asm89\\Stack' => 
+            array (
+                0 => __DIR__ . '/..' . '/asm89/stack-cors/src',
+            ),
+        ),
     );
 
     public static $classMap = array (

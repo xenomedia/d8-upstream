@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\panels_ipe\Plugin\DisplayBuilder\InPlaceEditorDisplayBuilder.
- */
-
 namespace Drupal\panels_ipe\Plugin\DisplayBuilder;
 
 use Drupal\Component\Utility\Html;
@@ -15,6 +10,7 @@ use Drupal\layout_plugin\Plugin\Layout\LayoutInterface;
 use Drupal\panels\Plugin\DisplayBuilder\StandardDisplayBuilder;
 use Drupal\panels\Plugin\DisplayVariant\PanelsDisplayVariant;
 use Drupal\panels\Storage\PanelsStorageManagerInterface;
+use Drupal\panels_ipe\TempStoreTrait;
 use Drupal\user\SharedTempStoreFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -28,6 +24,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * )
  */
 class InPlaceEditorDisplayBuilder extends StandardDisplayBuilder {
+
+  use TempStoreTrait;
 
   /**
    * @var \Drupal\user\SharedTempStore
@@ -135,14 +133,19 @@ class InPlaceEditorDisplayBuilder extends StandardDisplayBuilder {
       'id' => $layout->getPluginId(),
       'label' => $layout_definition['label'],
       'original' => true,
-      'changeable' => $this->panelsStorage->access($storage_type, $storage_id, 'change layout', $this->account)->isAllowed(),
+    ];
+
+    // Add information about the current user's permissions.
+    $settings['user_permission'] = [
+      'change_layout' => $this->panelsStorage->access($storage_type, $storage_id, 'change layout', $this->account)->isAllowed(),
+      'create_content' => $this->account->hasPermission('administer blocks'),
     ];
 
     // Add the display variant's config.
     $settings['panels_display'] = [
       'storage_type' => $storage_type,
       'storage_id' => $storage_id,
-      'id' => $panels_display->id(),
+      'id' => $this->getTempStoreId($panels_display),
     ];
 
     // Inform the App of our saved state.
@@ -167,7 +170,7 @@ class InPlaceEditorDisplayBuilder extends StandardDisplayBuilder {
       $unsaved = FALSE;
 
       // If a temporary configuration for this variant exists, use it.
-      $temp_store_key = $panels_display->id();
+      $temp_store_key = $this->getTempStoreId($panels_display);
       if ($variant_config = $this->tempStore->get($temp_store_key)) {
         unset($variant_config['id']);
         $panels_display->setConfiguration($variant_config);

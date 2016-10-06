@@ -6,4 +6,4 @@ default:
         wd_host: "http://localhost:8643/wd/hub"
     Drupal\DrupalExtension:
       drupal:
-        drupal_root: '/var/lib/jenkins/workspace/zeus/zeus_upstream'
+        drupal_root: "/var/lib/jenkins/workspace/zeus/zeus_upstream"

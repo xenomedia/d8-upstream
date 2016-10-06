@@ -23,7 +23,7 @@
     ],
     "require": {
         "composer/installers": "^1.0",
-        "drupal/lightning": "8.1.04",
+        "drupal/lightning": "8.1.06",
         "drupal/admin_toolbar": "8.*",
         "drupal/devel": "8.*",
         "drupal/stage_file_proxy": "8.*",

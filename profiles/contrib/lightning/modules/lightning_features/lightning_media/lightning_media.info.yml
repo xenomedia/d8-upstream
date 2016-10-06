@@ -13,8 +13,8 @@ dependencies:
   - user
   - views_infinite_scroll
 
-# Information added by Drupal.org packaging script on 2016-09-07
-version: '8.x-1.04'
+# Information added by Drupal.org packaging script on 2016-10-05
+version: '8.x-1.06'
 core: '8.x'
 project: 'lightning'
-datestamp: 1473278779
+datestamp: 1475683320
