@@ -10,9 +10,15 @@ lightning_extensions:
   - lightning_workflow
   - lightning_layout
   - lightning_media
+  # - lightning_preview
 
 # List of additional modules to enable after Lightning is installed.
-modules: { }
+modules: []
+
+# In the components key of their info file, Lightning components may list
+# additional sub-components to be installed. To override this behavior, you can
+# specify sub-components that should be excluded from the install process.
+exclude_components: []
 
 # A system path to redirect to once installation is complete.
 redirect:

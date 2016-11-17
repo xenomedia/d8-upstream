@@ -2,11 +2,14 @@
 
 namespace Drupal\Tests\entity_browser\FunctionalJavascript;
 
+use Drupal\Component\Utility\SafeMarkup;
+use Drupal\Core\Entity\Sql\SqlEntityStorageInterface;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\file\Entity\File;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\FunctionalJavascriptTests\JavascriptTestBase;
+use Drupal\Tests\Component\Utility\SafeMarkupTest;
 
 /**
  * Base class for Entity browser Javascript functional tests.
@@ -34,9 +37,20 @@ abstract class EntityBrowserJavascriptTestBase extends JavascriptTestBase {
   ];
 
   /**
+   * Permissions for user that will be logged-in for test.
+   *
+   * @var array
+   */
+  protected static $userPermissions = [
+    'access test_entity_browser_file entity browser pages',
+    'create article content',
+    'access content',
+  ];
+
+  /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  protected function setUp() {
     parent::setUp();
 
     $this->drupalCreateContentType(['type' => 'article', 'name' => 'Article']);
@@ -73,11 +87,7 @@ abstract class EntityBrowserJavascriptTestBase extends JavascriptTestBase {
       ],
     ])->save();
 
-    $account = $this->drupalCreateUser([
-      'access test_entity_browser_file entity browser pages',
-      'create article content',
-      'access content',
-    ]);
+    $account = $this->drupalCreateUser(static::$userPermissions);
     $this->drupalLogin($account);
   }
 
@@ -139,17 +149,20 @@ abstract class EntityBrowserJavascriptTestBase extends JavascriptTestBase {
    *
    * @param string $name
    *   The name of the image.
+   * @param string $extension
+   *   File extension.
    *
    * @return \Drupal\file\FileInterface
    *   Returns an image.
    */
-  protected function createFile($name) {
-    file_put_contents('public://' . $name . '.jpg', $this->randomMachineName());
+  protected function createFile($name, $extension = 'jpg') {
+    file_put_contents('public://' . $name . '.' . $extension, $this->randomMachineName());
 
     $image = File::create([
-      'filename' => $name . '.jpg',
-      'uri' => 'public://' . $name . '.jpg',
+      'filename' => $name . '.' . $extension,
+      'uri' => 'public://' . $name . '.' . $extension,
     ]);
+    $image->setPermanent();
     $image->save();
 
     return $image;
@@ -176,5 +189,26 @@ abstract class EntityBrowserJavascriptTestBase extends JavascriptTestBase {
     $condition = "jQuery('" . $selector . ":visible').length > 0";
     $this->assertJsCondition($condition, $timeout, $message);
   }
+
+  /**
+   * Debugger method to save additional HTML output.
+   *
+   * The base class will only save browser output when accessing page using
+   * ::drupalGet and providing a printer class to PHPUnit. This method
+   * is intended for developers to help debug browser test failures and capture
+   * more verbose output.
+   */
+  protected function saveHtmlOutput() {
+    $out = $this->getSession()->getPage()->getContent();
+    // Ensure that any changes to variables in the other thread are picked up.
+    $this->refreshVariables();
+    if ($this->htmlOutputEnabled) {
+      $html_output = '<hr />Ending URL: ' . $this->getSession()->getCurrentUrl();
+      $html_output .= '<hr />' . $out;
+      $html_output .= $this->getHtmlOutputHeaders();
+      $this->htmlOutput($html_output);
+    }
+  }
+
 
 }

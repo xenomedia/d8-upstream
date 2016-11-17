@@ -172,6 +172,7 @@ class EntityReferenceBrowserWidget extends WidgetBase implements ContainerFactor
 
     $element['open'] = [
       '#title' => $this->t('Show widget details as open by default'),
+      '#description' => $this->t('If marked, the fieldset container that wraps the browser on the entity form will be loaded initially expanded.'),
       '#type' => 'checkbox',
       '#default_value' => $this->getSetting('open'),
     ];
@@ -279,69 +280,7 @@ class EntityReferenceBrowserWidget extends WidgetBase implements ContainerFactor
    */
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
     $entity_type = $this->fieldDefinition->getFieldStorageDefinition()->getSetting('target_type');
-    $entity_storage = $this->entityTypeManager->getStorage($entity_type);
-
-    $entities = [];
-
-    // Determine if we're submitting and if submit came from this widget.
-    $is_relevant_submit = FALSE;
-    if (($trigger = $form_state->getTriggeringElement())) {
-      // Can be triggered by hidden target_id element or "Remove" button.
-      if (end($trigger['#parents']) === 'target_id' || (end($trigger['#parents']) === 'remove_button')) {
-        $is_relevant_submit = TRUE;
-
-        // In case there are more instances of this widget on the same page we
-        // need to check if submit came from this instance.
-        $field_name_key = end($trigger['#parents']) === 'target_id' ? 2 : static::$deleteDepth + 1;
-        $field_name_key = count($trigger['#parents']) - $field_name_key;
-        $is_relevant_submit &= ($trigger['#parents'][$field_name_key] === $this->fieldDefinition->getName()) &&
-          (array_slice($trigger['#parents'], 0, count($element['#field_parents'])) == $element['#field_parents']);
-      }
-    };
-
-    if ($is_relevant_submit) {
-      // Submit was triggered by hidden "target_id" element when entities were
-      // added via entity browser.
-      if (!empty($trigger['#ajax']['event']) && $trigger['#ajax']['event'] == 'entity_browser_value_updated') {
-        $parents = $trigger['#parents'];
-      }
-      // Submit was triggered by one of the "Remove" buttons. We need to walk
-      // few levels up to read value of "target_id" element.
-      elseif ($trigger['#type'] == 'submit' && strpos($trigger['#name'], $this->fieldDefinition->getName() . '_remove_') === 0) {
-        $parents = array_merge(array_slice($trigger['#parents'], 0, -static::$deleteDepth), ['target_id']);
-      }
-
-      if (isset($parents) && $value = $form_state->getValue($parents)) {
-        $entities = EntityBrowserElement::processEntityIds($value);
-      }
-    }
-    // IDs from a previous request might be saved in the form state.
-    elseif ($form_state->has(['entity_browser_widget', $this->getFormStateKey($items)])) {
-      $stored_ids = $form_state->get(['entity_browser_widget', $this->getFormStateKey($items)]);
-      $indexed_entities = $entity_storage->loadMultiple($stored_ids);
-
-      // Selection can contain same entity multiple times. Since loadMultiple()
-      // returns unique list of entities, it's necessary to recreate list of
-      // entities in order to preserve selection of duplicated entities.
-      foreach ($stored_ids as $entity_id) {
-        if (isset($indexed_entities[$entity_id])) {
-          $entities[] = $indexed_entities[$entity_id];
-        }
-      }
-    }
-    // We are loading for for the first time so we need to load any existing
-    // values that might already exist on the entity. Also, remove any leftover
-    // data from removed entity references.
-    else {
-      foreach ($items as $item) {
-        if (isset($item->target_id)) {
-          $entity = $entity_storage->load($item->target_id);
-          if (!empty($entity)) {
-            $entities[] = $entity;
-          }
-        }
-      }
-    }
+    $entities = $this->formElementEntities($items, $element, $form_state);
 
     // Get correct ordered list of entity IDs.
     $ids = array_map(
@@ -551,7 +490,7 @@ class EntityReferenceBrowserWidget extends WidgetBase implements ContainerFactor
                 'wrapper' => $details_id,
               ],
               '#submit' => [[get_class($this), 'removeItemSubmit']],
-              '#name' => $this->fieldDefinition->getName() . '_remove_' . $entity->id() . '_' . $row_id,
+              '#name' => $this->fieldDefinition->getName() . '_remove_' . $entity->id() . '_' . $row_id . '_' . md5(json_encode($field_parents)),
               '#limit_validation_errors' => [array_merge($field_parents, [$this->fieldDefinition->getName()])],
               '#attributes' => [
                 'data-entity-id' => $entity->getEntityTypeId() . ':' . $entity->id(),
@@ -642,6 +581,148 @@ class EntityReferenceBrowserWidget extends WidgetBase implements ContainerFactor
     }
 
     return $summary;
+  }
+
+  /**
+   * Determines the entities used for the form element.
+   *
+   * @param \Drupal\Core\Field\FieldItemListInterface $items
+   *   The field item to extract the entities from.
+   * @param array $element
+   *   The form element.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The form state.
+   *
+   * @return \Drupal\Core\Entity\EntityInterface[]
+   *   The list of entities for the form element.
+   */
+  protected function formElementEntities(FieldItemListInterface $items, array $element, FormStateInterface $form_state) {
+    $entities = [];
+    $entity_type = $this->fieldDefinition->getFieldStorageDefinition()->getSetting('target_type');
+    $entity_storage = $this->entityTypeManager->getStorage($entity_type);
+
+    // Find IDs from target_id element (it stores selected entities in form).
+    // This was added to help solve a really edge casey bug in IEF.
+    if (($target_id_entities = $this->getEntitiesByTargetId($element, $form_state)) !== FALSE) {
+      return $target_id_entities;
+    }
+
+    // Determine if we're submitting and if submit came from this widget.
+    $is_relevant_submit = FALSE;
+    if (($trigger = $form_state->getTriggeringElement())) {
+      // Can be triggered by hidden target_id element or "Remove" button.
+      if (end($trigger['#parents']) === 'target_id' || (end($trigger['#parents']) === 'remove_button')) {
+        $is_relevant_submit = TRUE;
+
+        // In case there are more instances of this widget on the same page we
+        // need to check if submit came from this instance.
+        $field_name_key = end($trigger['#parents']) === 'target_id' ? 2 : static::$deleteDepth + 1;
+        $field_name_key = count($trigger['#parents']) - $field_name_key;
+        $is_relevant_submit &= ($trigger['#parents'][$field_name_key] === $this->fieldDefinition->getName()) &&
+          (array_slice($trigger['#parents'], 0, count($element['#field_parents'])) == $element['#field_parents']);
+      }
+    };
+
+    if ($is_relevant_submit) {
+      // Submit was triggered by hidden "target_id" element when entities were
+      // added via entity browser.
+      if (!empty($trigger['#ajax']['event']) && $trigger['#ajax']['event'] == 'entity_browser_value_updated') {
+        $parents = $trigger['#parents'];
+      }
+      // Submit was triggered by one of the "Remove" buttons. We need to walk
+      // few levels up to read value of "target_id" element.
+      elseif ($trigger['#type'] == 'submit' && strpos($trigger['#name'], $this->fieldDefinition->getName() . '_remove_') === 0) {
+        $parents = array_merge(array_slice($trigger['#parents'], 0, -static::$deleteDepth), ['target_id']);
+      }
+
+      if (isset($parents) && $value = $form_state->getValue($parents)) {
+        $entities = EntityBrowserElement::processEntityIds($value);
+        return $entities;
+      }
+      return $entities;
+    }
+    // IDs from a previous request might be saved in the form state.
+    elseif ($form_state->has([
+      'entity_browser_widget',
+      $this->getFormStateKey($items),
+    ])
+    ) {
+      $stored_ids = $form_state->get([
+        'entity_browser_widget',
+        $this->getFormStateKey($items),
+      ]);
+      $indexed_entities = $entity_storage->loadMultiple($stored_ids);
+
+      // Selection can contain same entity multiple times. Since loadMultiple()
+      // returns unique list of entities, it's necessary to recreate list of
+      // entities in order to preserve selection of duplicated entities.
+      foreach ($stored_ids as $entity_id) {
+        if (isset($indexed_entities[$entity_id])) {
+          $entities[] = $indexed_entities[$entity_id];
+        }
+      }
+      return $entities;
+    }
+    // We are loading for for the first time so we need to load any existing
+    // values that might already exist on the entity. Also, remove any leftover
+    // data from removed entity references.
+    else {
+      foreach ($items as $item) {
+        if (isset($item->target_id)) {
+          $entity = $entity_storage->load($item->target_id);
+          if (!empty($entity)) {
+            $entities[] = $entity;
+          }
+        }
+      }
+      return $entities;
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function calculateDependencies() {
+    $dependencies = parent::calculateDependencies();
+
+    // If an entity browser is being used in this widget, add it as a config
+    // dependency.
+    if ($browser_name = $this->getSetting('entity_browser')) {
+      $dependencies['config'][] = 'entity_browser.browser.' . $browser_name;
+    }
+
+    return $dependencies;
+  }
+
+  /**
+   * Get selected elements from target_id element on form.
+   *
+   * @param array $element
+   *   The form element.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The form state.
+   *
+   * @return \Drupal\Core\Entity\EntityInterface[]|false
+   *   Return list of entities if they are available or false.
+   */
+  protected function getEntitiesByTargetId(array $element, FormStateInterface $form_state) {
+    $target_id_element_path = array_merge(
+      $element['#field_parents'],
+      [$this->fieldDefinition->getName(), 'target_id']
+    );
+
+    if (!NestedArray::keyExists($form_state->getUserInput(), $target_id_element_path)) {
+      return FALSE;
+    }
+
+    // TODO Figure out how to avoid using raw user input.
+    $current_user_input = NestedArray::getValue($form_state->getUserInput(), $target_id_element_path);
+    if (!is_array($current_user_input)) {
+      $entities = EntityBrowserElement::processEntityIds($current_user_input);
+      return $entities;
+    }
+
+    return FALSE;
   }
 
 }

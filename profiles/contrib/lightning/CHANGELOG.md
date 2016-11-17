@@ -1,3 +1,42 @@
+## 1.13
+* Tests now ensure that composer.lock is kept up to date. (GitHub #132)
+* The page title block is now properly placed in the Seven theme. (GitHub #190)
+* Twitter media entities can now be configured to automatically generate
+  thumbnails for textual tweets. (GitHub #203)
+* CI now uses database snapshots for update tests. (GitHub #201)
+* Fix Multiversion regression of node revisions list. (Issue #2824633
+  and #2825477)
+* Display modes and user roles can now have associated descriptions.
+  (GitHub #195)
+* Improved usability of the Panelizer interface. (Issue #2826071)
+* Lightning extender can now be used to exclude submodules of Lightning
+  extensions. (GitHub #220)
+* Updated all dependencies and core to their latest releases. (GitHub #219)
+
+## 1.12
+* Drupal core, and several contributed dependencies, were updated to their
+  latest stable releases.
+* Locked workflow states will now be clearly denoted with a lock icon when
+  editing a workspace. (GitHub #199)
+* The list of workspaces will no longer display a Status column. (GitHub #200
+  and #184)
+* Explained the Lightning Extender in README. (GitHub #198)
+* Node authorship is now preserved during replication between workspaces.
+  (GitHub #191, Issue #2817231)
+* File entities are now opted out of Multiversion control (i.e., all files
+  will always exist in all workspaces.) (GitHub #197)
+
+## 1.11
+* Fixed a dependency problem that was preventing Lightning from being installed
+  via Composer. (Issue #2699121)
+* Patched a core bug that could in certain circumstances result in file copies
+  failing during installation. (GitHub #179, Issue #2782239 and #2818031)
+* Lightning Preview is now compatible with Pathauto. (Issue #2817253)
+
+## 1.10
+* Drupal core updated to 8.2.1.
+* Introduced Lightning Preview module and Workspace Preview System.
+
 ## 1.06
 * Drupal core updated to 8.2.0!
 * Previously, the Metatag module could break Drush. This is now patched

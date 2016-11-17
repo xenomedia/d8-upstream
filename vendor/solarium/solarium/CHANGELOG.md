@@ -1,7 +1,16 @@
 # CHANGELOG
 
+## 3.7.0 - 2016-10-28
 
-## 3.6.0
+- added: support for nested documents in update query
+- added: spatial component for select query
+- added: support for keys and excludes in interval facet
+- added: support for grouping using a function (group.func)
+- bugfix: spellcheck collation parsing for Solr 5+
+- improvement: lots of fixes in documentation markup
+- added: included suggestion in composer file for a query builder library
+
+## 3.6.0 - 2016-05-03
 
 - improvement: no longer allow failures for HHVM in continuous integration
 - improvement: added Symfony 3.x components to CI tests for PHP 5.5+

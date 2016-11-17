@@ -7,8 +7,8 @@ package: Testing
 dependencies:
   - entity_browser_entity_form
 
-# Information added by Drupal.org packaging script on 2016-09-14
-version: '8.x-1.0-alpha9'
+# Information added by Drupal.org packaging script on 2016-11-15
+version: '8.x-1.0-beta1'
 core: '8.x'
 project: 'entity_browser'
-datestamp: 1473842054
+datestamp: 1479253141

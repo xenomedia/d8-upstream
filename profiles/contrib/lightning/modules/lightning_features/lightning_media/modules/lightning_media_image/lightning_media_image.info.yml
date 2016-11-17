@@ -9,8 +9,8 @@ dependencies:
 # version: 8.x-1.0-rc6
 package: Lightning
 
-# Information added by Drupal.org packaging script on 2016-10-05
-version: '8.x-1.06'
+# Information added by Drupal.org packaging script on 2016-11-16
+version: '8.x-1.13'
 core: '8.x'
 project: 'lightning'
-datestamp: 1475683320
+datestamp: 1479331711

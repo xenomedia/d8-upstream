@@ -12,9 +12,15 @@ dependencies:
   - media_entity
   - user
   - views_infinite_scroll
+components:
+  - lightning_media_document
+  - lightning_media_image
+  - lightning_media_instagram
+  - lightning_media_twitter
+  - lightning_media_video
 
-# Information added by Drupal.org packaging script on 2016-10-05
-version: '8.x-1.06'
+# Information added by Drupal.org packaging script on 2016-11-16
+version: '8.x-1.13'
 core: '8.x'
 project: 'lightning'
-datestamp: 1475683320
+datestamp: 1479331711
