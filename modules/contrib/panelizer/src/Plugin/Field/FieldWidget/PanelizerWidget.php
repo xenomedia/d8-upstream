@@ -87,16 +87,15 @@ class PanelizerWidget extends WidgetBase {
     foreach ($entity_view_modes as $view_mode => $view_mode_info) {
       $display = EntityViewDisplay::collectRenderDisplay($entity, $view_mode);
       $displays[$view_mode] = $display->getThirdPartySetting('panelizer', 'displays', []);
-      if (!isset($values[$view_mode])) {
+      // If we don't have a value, or the default is __bundle_default__ and our
+      // panels_display is empty, set the default to __bundle_default__.
+      if (!isset($values[$view_mode]) || ($values[$view_mode]['default'] == '__bundle_default__' && empty($values[$view_mode]['panels_display']))) {
         if ($display->getThirdPartySetting('panelizer', 'enable', FALSE)) {
           $values[$view_mode] = [
-            'default' => 'default',
+            'default' => '__bundle_default__',
             'panels_display' => [],
           ];
         }
-      }
-      elseif (!empty($values[$view_mode]['default']) && !empty($values[$view_mode]['panels_display'])) {
-        $values[$view_mode]['panels_display'] = [];
       }
     }
 
@@ -110,7 +109,11 @@ class PanelizerWidget extends WidgetBase {
 
       $settings = $this->getPanelizer()->getPanelizerSettings($entity_type_id, $entity->bundle(), $view_mode);
       if (!empty($settings['allow'])) {
-        $options = [];
+        // We default to this option when the user hasn't previous interacted
+        // with the field.
+        $options = [
+          '__bundle_default__' => $this->t('Current default display'),
+        ];
         foreach ($displays[$view_mode] as $machine_name => $panels_display) {
           $options[$machine_name] = $panels_display['label'];
         }
@@ -120,6 +123,8 @@ class PanelizerWidget extends WidgetBase {
           '#options' => $options,
           '#default_value' => $value['default'],
         ];
+        // If we have a value in panels_display, prevent the user from
+        // interacting with the widget for the view modes that are overridden.
         if (!empty($value['panels_display'])) {
           $element[$delta]['default']['#disabled'] = TRUE;
           $element[$delta]['default']['#options'][$value['default']] = $this->t('Custom Override');

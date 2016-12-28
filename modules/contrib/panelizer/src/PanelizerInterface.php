@@ -20,6 +20,21 @@ use Drupal\panels\Plugin\DisplayVariant\PanelsDisplayVariant;
 interface PanelizerInterface {
 
   /**
+   * Gets the entity view display for the entity type, bundle and view mode.
+   *
+   * @param $entity_type_id
+   *   The entity type id.
+   * @param $bundle
+   *   The bundle.
+   * @param $view_mode
+   *   The view mode.
+   *
+   * @return \Drupal\Core\Entity\Display\EntityViewDisplayInterface|NULL
+   *   The entity view display if one exists; NULL otherwise.
+   */
+  public function getEntityViewDisplay($entity_type_id, $bundle, $view_mode);
+
+  /**
    * Gets the Panels display for a given entity and view mode.
    *
    * @param \Drupal\Core\Entity\EntityInterface $entity

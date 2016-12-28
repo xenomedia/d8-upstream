@@ -134,9 +134,21 @@ class PanelizerFieldPanelsStorage extends PanelsStorageBase implements Container
     $id = $panels_display->getStorageId();
     if ($entity = $this->loadEntity($id)) {
       list (,, $view_mode) = explode(':', $id);
+      // If we're dealing with an entity that has a documented default, we
+      // don't want to lose that information when we save our customizations.
+      // This enables us to revert to the correct default at a later date.
       if ($entity instanceof FieldableEntityInterface) {
+        $default = NULL;
+        if ($entity->hasField('panelizer') && $entity->panelizer->first()) {
+          foreach ($entity->panelizer as $item) {
+            if ($item->view_mode == $view_mode) {
+              $default = $item->default;
+              break;
+            }
+          }
+        }
         try {
-          $this->panelizer->setPanelsDisplay($entity, $view_mode, NULL, $panels_display);
+          $this->panelizer->setPanelsDisplay($entity, $view_mode, $default, $panels_display);
         }
         catch (PanelizerException $e) {
           // Translate to expected exception type.
@@ -154,21 +166,30 @@ class PanelizerFieldPanelsStorage extends PanelsStorageBase implements Container
    */
   public function access($id, $op, AccountInterface $account) {
     if ($entity = $this->loadEntity($id)) {
-      if ($op == 'change layout') {
-        $entity_op = 'update';
-      }
-      else {
-        $entity_op = $op;
-      }
-      if ($entity->access($entity_op, $account) && $entity instanceof FieldableEntityInterface) {
+      $access = AccessResult::neutral()
+        ->addCacheableDependency($account);
+
+      // We do not support "create", as this method's interface dictates,
+      // because we work with existing entities here.
+      $entity_operations = [
+        'read' => 'view',
+        'update' => 'update',
+        'delete'=> 'delete',
+        'change layout' => 'update',
+      ];
+      // Do not add entity cacheability metadata to the forbidden result,
+      // because it depends on the Panels operation, and not on the entity.
+      $access->orIf(isset($entity_operations[$op]) ? $entity->access($entity_operations[$op], $account, TRUE) : AccessResult::forbidden());
+
+      if (!$access->isForbidden() && $entity instanceof FieldableEntityInterface) {
         list (,, $view_mode) = explode(':', $id);
         if ($op == 'change layout') {
           if ($this->panelizer->hasEntityPermission('change layout', $entity, $view_mode, $account)) {
-            return AccessResult::allowed();
+            return $access->orIf(AccessResult::allowed());
           }
         }
         else if ($op == 'read' || $this->panelizer->hasEntityPermission('change content', $entity, $view_mode, $account)) {
-          return AccessResult::allowed();
+          return $access->orIf(AccessResult::allowed());
         }
       }
     }

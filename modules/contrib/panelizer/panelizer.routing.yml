@@ -49,7 +49,8 @@ panelizer.default.delete:
     _form: '\Drupal\panelizer\Form\PanelizerDefaultDelete'
     _title: 'Delete panelizer default'
   requirements:
-    _permission: 'administer panelizer'
+    _panelizer_field_ui_view_mode_access: 'TRUE'
+    _custom_access: '\Drupal\panelizer\Access\PanelizerDefaultsDisplayAccess::isNotDefaultDisplay'
 
 panelizer.default.select:
   path: '/admin/structure/panelizer/set_default/{machine_name}'
@@ -57,7 +58,8 @@ panelizer.default.select:
     _form: '\Drupal\panelizer\Form\PanelizerDefaultSelect'
     _title: 'Set as default'
   requirements:
-    _permission: 'administer panelizer'
+    _panelizer_field_ui_view_mode_access: 'TRUE'
+    _custom_access: '\Drupal\panelizer\Access\PanelizerDefaultsDisplayAccess::isNotDefaultDisplay'
 
 # Contexts
 panelizer.wizard.step.context.add:

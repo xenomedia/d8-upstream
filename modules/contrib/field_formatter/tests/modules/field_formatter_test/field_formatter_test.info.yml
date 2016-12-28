@@ -11,8 +11,8 @@ dependencies:
   - user
   - field_formatter
 
-# Information added by Drupal.org packaging script on 2016-07-05
-version: '8.x-1.0-rc1'
+# Information added by Drupal.org packaging script on 2016-07-12
+version: '8.x-1.0'
 core: '8.x'
 project: 'field_formatter'
-datestamp: 1467705240
+datestamp: 1468356850

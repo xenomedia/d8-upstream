@@ -146,17 +146,21 @@ class Panelizer implements PanelizerInterface {
   }
 
   /**
-   * Gets the entity view display for the entity type, bundle and view mode.
+   * Load a Panels Display via an ID (Machine Name).
    *
-   * @param $entity_type_id
-   *   The entity type id.
-   * @param $bundle
-   *   The bundle.
-   * @param $view_mode
-   *   The view mode.
-   *
-   * @return \Drupal\Core\Entity\Display\EntityViewDisplayInterface|NULL
-   *   The entity view display if one exists; NULL otherwise.
+   * @return \Drupal\panels\Plugin\DisplayVariant\PanelsDisplayVariant|NULL
+   *   The default Panels display with the given name if it exists; otherwise
+   *   NULL.
+   */
+  public function getDefaultPanelsDisplayByMachineName($full_machine_name) {
+    list($entity_type, $bundle, $view_mode, $machine_name) = explode('__', $full_machine_name);
+    /** @var \Drupal\panelizer\Panelizer $panelizer */
+    // @todo this $display_id looks all wrong to me since it's the name and view_mode.
+    return $this->getDefaultPanelsDisplay($machine_name, $entity_type, $bundle, $view_mode);
+  }
+
+  /**
+   * {@inheritdoc}
    */
   public function getEntityViewDisplay($entity_type_id, $bundle, $view_mode) {
     // Check the existence and status of:
@@ -219,16 +223,68 @@ class Panelizer implements PanelizerInterface {
       }
       if (isset($values[$view_mode])) {
         $panelizer_item = $values[$view_mode];
-        if (!empty($panelizer_item->default)) {
-          return $this->getDefaultPanelsDisplay($panelizer_item->default, $entity->getEntityTypeId(), $entity->bundle(), $view_mode, $display);
+        // Check for a customized display first and use that if present.
+        if (!empty($panelizer_item->panels_display)) {
+          // @todo: validate schema after https://www.drupal.org/node/2392057 is fixed.
+          return $this->panelsManager->importDisplay($panelizer_item->panels_display, FALSE);
         }
-
-        // @todo: validate schema after https://www.drupal.org/node/2392057 is fixed.
-        return $this->panelsManager->importDisplay($panelizer_item->panels_display, FALSE);
+        // If not customized, use the specified default.
+        if (!empty($panelizer_item->default)) {
+          // If we're using this magic key use the settings default.
+          if ($panelizer_item->default == '__bundle_default__') {
+            $default = $settings['default'];
+          }
+          else {
+            $default = $panelizer_item->default;
+            // Ensure the default still exists and if not fallback sanely.
+            $displays = $this->getDefaultPanelsDisplays($entity->getEntityTypeId(), $entity->bundle(), $view_mode);
+            if (!isset($displays[$default])) {
+              $default = $settings['default'];
+            }
+          }
+          $panels_display = $this->getDefaultPanelsDisplay($default, $entity->getEntityTypeId(), $entity->bundle(), $view_mode, $display);
+          $this->setCacheTags($panels_display, $entity->getEntityTypeId(), $entity->bundle(), $view_mode, $display, $default, $settings);
+          return $panels_display;
+        }
       }
     }
+    // If the field has no input to give us, use the settings default.
+    $panels_display = $this->getDefaultPanelsDisplay($settings['default'], $entity->getEntityTypeId(), $entity->bundle(), $view_mode, $display);
+    $this->setCacheTags($panels_display, $entity->getEntityTypeId(), $entity->bundle(), $view_mode, $display, $settings['default'], $settings);
+    return $panels_display;
+  }
 
-    return $this->getDefaultPanelsDisplay($settings['default'], $entity->getEntityTypeId(), $entity->bundle(), $view_mode, $display);
+  /**
+   * Properly determine the cache tags for a display and set them.
+   *
+   * @param \Drupal\panels\Plugin\DisplayVariant\PanelsDisplayVariant $panels_display
+   *   The panels display variant.
+   * @param string $entity_type_id
+   *   The entity type id.
+   * @param string $bundle
+   *   The bundle.
+   * @param string $view_mode
+   *   The view mode.
+   * @param \Drupal\Core\Entity\Display\EntityViewDisplayInterface|NULL $display
+   *   If the caller already has the correct display, it can optionally be
+   *   passed in here so the Panelizer service doesn't have to look it up;
+   *   otherwise, this argument can be omitted.
+   * @param $default
+   *   The name of the panels display we are about to render.
+   * @param array $settings
+   *   The default panelizer settings for this EntityViewDisplay.
+   */
+  protected function setCacheTags(PanelsDisplayVariant $panels_display, $entity_type_id, $bundle, $view_mode, EntityViewDisplayInterface $display = NULL, $default, array $settings) {
+    if (!$display) {
+      $display = $this->getEntityViewDisplay($entity_type_id, $bundle, $view_mode);
+    }
+    $display_mode = $display ? $display->getMode() : '';
+
+    if ($default == $settings['default']) {
+      $tags = ["{$panels_display->getStorageType()}:{$entity_type_id}:{$bundle}:{$display_mode}"];
+    }
+    $tags[] = "{$panels_display->getStorageType()}:{$entity_type_id}:{$bundle}:{$display_mode}:$default";
+    $panels_display->addCacheTags($tags);
   }
 
   /**

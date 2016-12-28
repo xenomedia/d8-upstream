@@ -35,7 +35,6 @@ use Drupal\scheduled_updates\ScheduledUpdateTypeInterface;
  *     "uuid" = "uuid"
  *   },
  *   links = {
- *     "canonical" = "/admin/config/workflow/scheduled-update-type/{scheduled_update_type}",
  *     "edit-form" = "/admin/config/workflow/scheduled-update-type/{scheduled_update_type}/edit",
  *     "delete-form" = "/admin/config/workflow/scheduled-update-type/{scheduled_update_type}/delete",
  *     "collection" = "/admin/config/workflow/scheduled-update-type/list",

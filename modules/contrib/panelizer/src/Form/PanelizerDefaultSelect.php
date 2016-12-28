@@ -7,6 +7,7 @@
 
 namespace Drupal\panelizer\Form;
 
+use Drupal\Core\Cache\CacheTagsInvalidatorInterface;
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
@@ -51,13 +52,21 @@ class PanelizerDefaultSelect extends ConfirmFormBase {
   protected $panelizer;
 
   /**
+   * The cache tag invalidator.
+   *
+   * @var \Drupal\Core\Cache\CacheTagsInvalidatorInterface
+   */
+  protected $invalidator;
+
+  /**
    * PanelizerDefaultSelect constructor.
    *
    * @param \Drupal\panelizer\PanelizerInterface $panelizer
    *   The Panelizer service.
    */
-  public function __construct(PanelizerInterface $panelizer) {
+  public function __construct(PanelizerInterface $panelizer, CacheTagsInvalidatorInterface $invalidator) {
     $this->panelizer = $panelizer;
+    $this->invalidator = $invalidator;
   }
 
   /**
@@ -65,7 +74,8 @@ class PanelizerDefaultSelect extends ConfirmFormBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('panelizer')
+      $container->get('panelizer'),
+      $container->get('cache_tags.invalidator')
     );
   }
 
@@ -127,6 +137,8 @@ class PanelizerDefaultSelect extends ConfirmFormBase {
     $settings['default'] = $this->displayId;
     $this->panelizer->setPanelizerSettings($this->entityTypeId, $this->bundle, $this->viewMode, $settings, $display);
     $form_state->setRedirectUrl($this->getCancelUrl());
+    $tag = "panelizer_default:{$this->entityTypeId}:{$this->bundle}:{$this->viewMode}";
+    $this->invalidator->invalidateTags([$tag]);
   }
 
 }

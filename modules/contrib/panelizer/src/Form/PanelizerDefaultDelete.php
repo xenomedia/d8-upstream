@@ -7,6 +7,7 @@
 
 namespace Drupal\panelizer\Form;
 
+use Drupal\Core\Cache\CacheTagsInvalidatorInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -67,6 +68,13 @@ class PanelizerDefaultDelete extends ConfirmFormBase {
   protected $panelsDisplayManager;
 
   /**
+   * The cache tag invalidator.
+   *
+   * @var \Drupal\Core\Cache\CacheTagsInvalidatorInterface
+   */
+  protected $invalidator;
+
+  /**
    * PanelizerDefaultDelete constructor.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
@@ -76,10 +84,11 @@ class PanelizerDefaultDelete extends ConfirmFormBase {
    * @param \Drupal\panels\PanelsDisplayManagerInterface $panels_display_manager
    *   The Panels display manager.
    */
-  public function __construct(EntityTypeManagerInterface $entity_type_manager, PanelizerInterface $panelizer, PanelsDisplayManagerInterface $panels_display_manager) {
+  public function __construct(EntityTypeManagerInterface $entity_type_manager, PanelizerInterface $panelizer, PanelsDisplayManagerInterface $panels_display_manager, CacheTagsInvalidatorInterface $invalidator) {
     $this->entityTypeManager = $entity_type_manager;
     $this->panelizer = $panelizer;
     $this->panelsDisplayManager = $panels_display_manager;
+    $this->invalidator = $invalidator;
   }
 
   /**
@@ -89,7 +98,8 @@ class PanelizerDefaultDelete extends ConfirmFormBase {
     return new static(
       $container->get('entity_type.manager'),
       $container->get('panelizer'),
-      $container->get('panels.display_manager')
+      $container->get('panels.display_manager'),
+      $container->get('cache_tags.invalidator')
     );
   }
 
@@ -155,6 +165,8 @@ class PanelizerDefaultDelete extends ConfirmFormBase {
     $display->setThirdPartySetting('panelizer', 'displays', $displays);
     $display->save();
     $form_state->setRedirectUrl($this->getCancelUrl());
+    $tag = "panelizer_default:{$this->entityTypeId}:{$this->bundle}:{$this->viewMode}:{$this->displayId}";
+    $this->invalidator->invalidateTags([$tag]);
   }
 
 }

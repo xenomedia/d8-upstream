@@ -5,3 +5,7 @@ Patches applied to this directory:
 Source: https://www.drupal.org/files/issues/schedule_updates-save_type-2674874-2.patch
 
 
+2720169 - Scheduled Update Type entity should not have canonical link template
+Source: https://www.drupal.org/files/issues/scheduled_updates-no-canonical-link-for-update-type.patch
+
+
