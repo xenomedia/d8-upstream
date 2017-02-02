@@ -40,7 +40,7 @@ class MetatagTagsTest extends MetatagTagsTestBase {
   /**
    * Each of these meta tags has a different tag name vs its internal name.
    */
-  public function get_test_tag_name($tag_name) {
+  public function getTestTagName($tag_name) {
     if ($tag_name == 'geo_placename') {
       $tag_name = 'geo.placename';
     }
@@ -106,6 +106,20 @@ class MetatagTagsTest extends MetatagTagsTestBase {
    */
   public function description_test_field_xpath() {
     return "//textarea[@name='description']";
+  }
+
+  /**
+   * Implements {meta_tag_name}_test_output_xpath() for 'image_src'.
+   */
+  public function image_src_test_output_xpath() {
+    return "//link[@rel='image_src']";
+  }
+
+  /**
+   * Implements {meta_tag_name}_test_value_attribute() for 'image_src'.
+   */
+  public function image_src_test_value_attribute() {
+    return 'href';
   }
 
   /**
