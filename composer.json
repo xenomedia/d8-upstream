@@ -24,7 +24,9 @@
     "require": {
         "composer/installers": "^1.0",
         "drupal-composer/drupal-scaffold": "^2.0.0",
-        "xenomedia/zeus": "^8.2.0"
+        "xenomedia/zeus": "~8",
+        "drupal/config_installer": "^1.0",
+        "drupal/config_direct_save": "^1.0"
     },
     "scripts": {
       "drupal-unit-tests": "cd web/core && ../../vendor/bin/phpunit --testsuite=unit --exclude-group Composer,DependencyInjection,PageCache",
@@ -65,8 +67,7 @@
       "drupal-scaffold": {
         "source": "https://raw.githubusercontent.com/pantheon-systems/drops-8/{version}/{path}",
         "includes": [
-          "sites/default/default.services.pantheon.preproduction.yml",
-          "sites/default/settings.pantheon.php"
+          "sites/default/default.services.pantheon.preproduction.yml"
         ],
         "excludes": [
           ".csslintrc",
