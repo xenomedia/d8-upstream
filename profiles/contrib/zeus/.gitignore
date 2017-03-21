@@ -1,9 +1,0 @@
-.DS_Store
-bin/
-core/
-profiles/
-modules/
-vendor/
-node_modules/
-bower_components/
-.sass-cache/
