@@ -27,13 +27,21 @@
         "xenomedia/zeus": "^8.2.0"
     },
     "scripts": {
+      "drupal-unit-tests": "cd web/core && ../../vendor/bin/phpunit --testsuite=unit --exclude-group Composer,DependencyInjection,PageCache",
+      "drupal-scaffold": "DrupalComposer\\DrupalScaffold\\Plugin::scaffold",
       "post-install-cmd": [
-        "DrupalComposer\\DrupalScaffold\\Plugin::scaffold",
+        "@drupal-scaffold",
+        "DrupalProject\\composer\\ScriptHandler::createRequiredFiles",
         "Acquia\\Lightning\\ScriptHandler::deployLibraries"
       ],
       "post-update-cmd": [
-        "DrupalComposer\\DrupalScaffold\\Plugin::scaffold",
+        "@drupal-scaffold",
+        "DrupalProject\\composer\\ScriptHandler::createRequiredFiles",
         "Acquia\\Lightning\\ScriptHandler::deployLibraries"
+      ],
+      "post-create-project-cmd": [
+        "@drupal-scaffold",
+        "DrupalProject\\composer\\ScriptHandler::createRequiredFiles"
       ]
     },
     "config": {
@@ -47,23 +55,28 @@
         ]
     },
     "extra": {
-        "installer-paths": {
-            "core": [
-                "drupal/core"
-            ],
-            "modules/contrib/{$name}": [
-                "type:drupal-module"
-            ],
-            "profiles/contrib/{$name}": [
-                "type:drupal-profile"
-            ],
-            "themes/contrib/{$name}": [
-                "type:drupal-theme"
-            ],
-            "drush/contrib/{$name}": [
-                "type:drupal-drush"
-            ]
-        },
-        "enable-patching": true
+      "installer-paths": {
+        "web/core": ["type:drupal-core"],
+        "web/modules/contrib/{$name}": ["type:drupal-module"],
+        "web/profiles/contrib/{$name}": ["type:drupal-profile"],
+        "web/themes/contrib/{$name}": ["type:drupal-theme"],
+        "drush/contrib/{$name}": ["type:drupal-drush"]
+      },
+      "drupal-scaffold": {
+        "source": "https://raw.githubusercontent.com/pantheon-systems/drops-8/{version}/{path}",
+        "includes": [
+          "sites/default/default.services.pantheon.preproduction.yml",
+          "sites/default/settings.pantheon.php"
+        ],
+        "excludes": [
+          ".csslintrc",
+          ".editorconfig",
+          ".eslintignore",
+          ".eslintrc.json",
+          ".htaccess",
+          "web.config"
+        ]
+      },
+      "enable-patching": true
     }
 }
