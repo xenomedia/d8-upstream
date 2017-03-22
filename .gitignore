@@ -31,6 +31,9 @@ web/sites/example.sites.php
 web/update.php
 web/web.config
 
+# Ignore composer.lock file to prevent problems on child sites.
+composer.lock
+
 # Add directories containing build assets below.
 # Keep all additions above the "cut" line.
 
