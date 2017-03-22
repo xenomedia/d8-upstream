@@ -108,6 +108,9 @@ Thumbs.db
 # Things in the core directory that Drupal 8 commits in the repository.
 !web/core/**/*.gz
 
+# Ignores behat local #
+tests/behat.local.yml
+
 # Exclude Configuration #
 #########################
 config/stage_file_proxy.settings.yml
