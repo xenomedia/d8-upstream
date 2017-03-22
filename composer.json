@@ -24,11 +24,14 @@
     "require": {
         "composer/installers": "^1.0",
         "drupal-composer/drupal-scaffold": "^2.0.0",
-        "xenomedia/zeus": "~8",
-        "drupal/config_installer": "^1.0",
-        "drupal/config_direct_save": "^1.0"
+        "xenomedia/zeus": "~8"
     },
     "scripts": {
+      "build-assets": [
+        "@prepare-for-pantheon",
+        "./scripts/composer/install-or-update"
+      ],
+      "prepare-for-pantheon": "DrupalProject\\composer\\ScriptHandler::prepareForPantheon",
       "drupal-unit-tests": "cd web/core && ../../vendor/bin/phpunit --testsuite=unit --exclude-group Composer,DependencyInjection,PageCache",
       "drupal-scaffold": "DrupalComposer\\DrupalScaffold\\Plugin::scaffold",
       "post-install-cmd": [
@@ -53,7 +56,8 @@
     },
     "autoload": {
         "classmap": [
-          "scripts/ScriptHandler.php"
+          "scripts/ScriptHandler.php",
+          "scripts/composer/ScriptHandler.php"
         ]
     },
     "extra": {
@@ -67,7 +71,8 @@
       "drupal-scaffold": {
         "source": "https://raw.githubusercontent.com/pantheon-systems/drops-8/{version}/{path}",
         "includes": [
-          "sites/default/default.services.pantheon.preproduction.yml"
+          "sites/default/default.services.pantheon.preproduction.yml",
+          "sites/default/settings.pantheon.php"
         ],
         "excludes": [
           ".csslintrc",
